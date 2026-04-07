@@ -78,11 +78,12 @@
               "filesystem.readAll", "filesystem.writeAll",
               "shell.execute", "shell.uncontained",
               "clipboard.read", "clipboard.write",
-              "network.outbound", "network.unrestricted",
+              "network", "network.outbound", "network.fetch", "network.unrestricted",
               "keychain.plugin",
               "interPlugin.declare", "interPlugin.contribute", "interPlugin.query", "interPlugin.emit",
               "workspaces", "cache", "feedback", "feedback.confirm",
-              "oauth", "menubar", "menubar.globalShortcut", "smartFolders"
+              "oauth", "menubar", "menubar.globalShortcut", "smartFolders",
+              "webview"
             ]
           },
           {
@@ -158,6 +159,23 @@
       },
       "additionalProperties": false,
       "description": "Menu bar NSStatusItem configuration"
+    },
+    "homepage": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to the plugin's homepage or repository"
+    },
+    "categories": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "description": "Plugin Store category tags"
+    },
+    "keywords": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "description": "Search keywords for discoverability"
     }
   }
 }
