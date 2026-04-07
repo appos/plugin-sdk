@@ -2,17 +2,25 @@
   "name": "@appos/plugin-utils",
   "version": "2.3.0",
   "description": "Common utility functions for 2Panez plugins",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "test": "node --test dist/__tests__/*.test.js"
   },
-  "keywords": ["2panez", "plugin", "utilities"],
+  "keywords": [
+    "2panez",
+    "plugin",
+    "utilities"
+  ],
   "license": "MIT",
   "author": "This Local, Inc.",
   "devDependencies": {
+    "@types/node": "^25.5.2",
     "typescript": "^5.4.0"
   }
 }
