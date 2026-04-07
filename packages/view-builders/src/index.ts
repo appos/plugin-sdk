@@ -14,7 +14,7 @@
  *   ]);
  */
 
-export { vstack, hstack, scroll, list, grid, section } from "./containers";
-export { text, label, image, badge, button, listItem } from "./content";
-export { divider, spacer, textField, progress, remoteImage } from "./primitives";
-export { menuAction, menuDivider, encodeMenuActions } from "./menus";
+export { vstack, hstack, scroll, list, grid, section } from "./containers.js";
+export { text, label, image, badge, button, listItem } from "./content.js";
+export { divider, spacer, textField, progress, remoteImage } from "./primitives.js";
+export { menuAction, menuDivider, encodeMenuActions } from "./menus.js";

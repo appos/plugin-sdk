@@ -1,5 +1,5 @@
 import type { MenuAction, SFSymbolName } from "@appos/plugin-types";
-import { stripUndefined } from "./util";
+import { stripUndefined } from "./util.js";
 
 /**
  * Create a typed menu action for context menus.

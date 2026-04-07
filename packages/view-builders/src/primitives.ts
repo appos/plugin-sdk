@@ -5,7 +5,7 @@ import type {
   ProgressDescriptor,
   RemoteImageDescriptor,
 } from "@appos/plugin-types";
-import { stripUndefined } from "./util";
+import { stripUndefined } from "./util.js";
 
 export function divider(): DividerDescriptor {
   return { type: "divider" };

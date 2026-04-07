@@ -2,6 +2,7 @@
   "name": "@appos/view-builders",
   "version": "2.3.0",
   "description": "Typed ViewDescriptor builder helpers for 2Panez plugins",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist"],
