@@ -115,6 +115,7 @@ export interface ListItemDescriptor extends ViewDescriptorBase {
     icon?: string;
     iconColor?: PluginColor;
     action?: string;
+    trailing?: string;
     menuActions?: string; // JSON-encoded MenuAction[]
   };
 }
@@ -153,6 +154,7 @@ export interface ProgressDescriptor extends ViewDescriptorBase {
   properties?: {
     value?: number; // 0–1, omit for indeterminate
     label?: string;
+    style?: "bar" | "circular";
   };
 }
 
@@ -163,6 +165,7 @@ export interface RemoteImageDescriptor extends ViewDescriptorBase {
     width?: number;
     height?: number;
     cornerRadius?: number;
+    maxDimension?: number;
   };
 }
 
