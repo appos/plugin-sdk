@@ -7,6 +7,7 @@
 
 import type { PluginColor } from "./colors";
 import type { PluginFont } from "./fonts";
+import type { SFSymbolName } from "./icons";
 
 // ─── Base ───────────────────────────────────────────
 
@@ -50,7 +51,7 @@ export interface SectionDescriptor extends ViewDescriptorBase {
   children: ViewDescriptor[];
   properties: {
     title: string;
-    icon?: string;
+    icon?: SFSymbolName;
     badge?: string;
     isExpanded?: boolean;
     id?: string;
@@ -75,7 +76,7 @@ export interface LabelDescriptor extends ViewDescriptorBase {
   type: "label";
   properties: {
     title: string;
-    icon?: string;
+    icon?: SFSymbolName;
     font?: PluginFont;
   };
 }
@@ -83,7 +84,7 @@ export interface LabelDescriptor extends ViewDescriptorBase {
 export interface ImageDescriptor extends ViewDescriptorBase {
   type: "image";
   properties: {
-    systemName: string;
+    systemName: SFSymbolName;
   };
 }
 
@@ -112,7 +113,7 @@ export interface ListItemDescriptor extends ViewDescriptorBase {
   properties: {
     title: string;
     subtitle?: string;
-    icon?: string;
+    icon?: SFSymbolName;
     iconColor?: PluginColor;
     action?: string;
     trailing?: string;
@@ -122,7 +123,7 @@ export interface ListItemDescriptor extends ViewDescriptorBase {
 
 export interface MenuAction {
   title: string;
-  icon?: string;
+  icon?: SFSymbolName;
   action?: string;
   destructive?: boolean;
 }

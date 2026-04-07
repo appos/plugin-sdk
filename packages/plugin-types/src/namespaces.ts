@@ -5,12 +5,14 @@
 
 import type { ViewDescriptor } from "./views";
 import type { PluginFileDescriptor } from "./core";
+import type { SFSymbolName } from "./icons";
+import type { PermissionScope } from "./permissions";
 
 // ─── commands ───────────────────────────────────────
 
 export interface CommandOptions {
   title: string;
-  icon?: string;
+  icon?: SFSymbolName;
   handler: (...args: unknown[]) => void | Promise<void>;
 }
 
@@ -79,7 +81,7 @@ export interface FileOpsAPI {
 
 export interface PanelOptions {
   title: string;
-  icon?: string;
+  icon?: SFSymbolName;
   view?: ViewDescriptor;
   target?: "sidebar" | "pane";
   badge?: string;
@@ -89,7 +91,7 @@ export interface PanelOptions {
 
 export interface ActivityViewOptions {
   title: string;
-  icon: string;
+  icon: SFSymbolName;
   view?: ViewDescriptor;
   linkedPanel?: string;
   handler?: (action: string) => void | Promise<void>;
@@ -97,7 +99,7 @@ export interface ActivityViewOptions {
 
 export interface WebPanelOptions {
   title: string;
-  icon?: string;
+  icon?: SFSymbolName;
   htmlPath: string;
   width?: number;
   allowNavigation?: boolean;
@@ -292,7 +294,7 @@ export interface ThemesAPI {
 export interface SmartFolderDescriptor {
   id: string;
   name: string;
-  icon?: string;
+  icon?: SFSymbolName;
 }
 
 export interface FilterEvalResult {
@@ -371,7 +373,7 @@ export interface WorkspaceTabDescriptor {
 export interface WorkspaceTemplate {
   id: string;
   name: string;
-  icon?: string;
+  icon?: SFSymbolName;
   leftPane?: { tabs: WorkspaceTabDescriptor[]; activeTab?: number };
   rightPane?: { tabs: WorkspaceTabDescriptor[]; activeTab?: number };
   source?: { type: string; pluginId?: string };
@@ -439,8 +441,8 @@ export interface MenuBarRenderContext {
 }
 
 export interface MenubarAPI {
-  register(options: { icon: string; label?: string }): Promise<true>;
-  update(options: { icon?: string; label?: string }): Promise<true>;
+  register(options: { icon: SFSymbolName; label?: string }): Promise<true>;
+  update(options: { icon?: SFSymbolName; label?: string }): Promise<true>;
   setBadge(count: number): Promise<true>;
   setContent(descriptor: ViewDescriptor): Promise<true>;
   remove(): Promise<true>;
