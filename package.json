@@ -1,0 +1,20 @@
+{
+  "name": "@twopanez/plugin-sdk",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "tsc --noEmit --project tsconfig.json",
+    "sync-types": "node scripts/sync-types.mjs",
+    "validate-schema": "node scripts/validate-schema.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

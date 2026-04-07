@@ -1,0 +1,21 @@
+{
+  "name": "@twopanez/view-builders",
+  "version": "2.3.0",
+  "description": "Typed ViewDescriptor builder helpers for 2Panez plugins",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "test": "node --test dist/__tests__/*.test.js"
+  },
+  "keywords": ["2panez", "plugin", "viewdescriptor", "ui", "builders"],
+  "license": "MIT",
+  "author": "This Local, Inc.",
+  "dependencies": {
+    "@twopanez/plugin-types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

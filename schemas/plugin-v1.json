@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://2panez.com/schemas/plugin-v1.json",
+  "title": "2Panez Plugin Manifest",
+  "description": "Schema for plugin.json — the manifest file required by every 2Panez plugin.",
+  "type": "object",
+  "required": ["id", "name", "version", "runtime", "entrypoint"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference (optional, for editor autocomplete)"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*)+$",
+      "description": "Reverse-domain identifier (e.g. com.community.myplugin)"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Human-readable display name"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+",
+      "description": "Semantic version (MAJOR.MINOR.PATCH)"
+    },
+    "runtime": {
+      "type": "string",
+      "enum": ["javascript"],
+      "description": "Plugin runtime (currently only 'javascript')"
+    },
+    "entrypoint": {
+      "type": "string",
+      "description": "Path to the compiled JS bundle (e.g. dist/main.js)"
+    },
+    "minHostVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+",
+      "description": "Minimum 2Panez version required"
+    },
+    "author": {
+      "type": "string",
+      "description": "Plugin author name"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 256,
+      "description": "Brief description"
+    },
+    "license": {
+      "type": "string",
+      "description": "SPDX license identifier (e.g. MIT, Apache-2.0)"
+    },
+    "activation": {
+      "type": "object",
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["onStartup"] },
+          "description": "When to activate (currently only onStartup)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "ui.sidebar", "ui.statusBar", "ui.contextMenu", "ui.notifications",
+          "ui.sheets", "ui.shortcuts", "ui.themes", "ui.preview", "ui.aiChat", "ui.webPanel",
+          "filesystem.read", "filesystem.write", "filesystem.watch",
+          "filesystem.readAll", "filesystem.writeAll",
+          "shell.execute", "shell.uncontained",
+          "clipboard.read", "clipboard.write",
+          "network.outbound", "network.unrestricted",
+          "keychain.plugin",
+          "interPlugin.declare", "interPlugin.contribute", "interPlugin.query", "interPlugin.emit",
+          "workspaces", "cache", "feedback", "feedback.confirm",
+          "oauth", "menubar", "menubar.globalShortcut", "smartFolders"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Required permission scopes"
+    },
+    "shellCommands": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "description": "Allowed shell command names for shell.execute"
+    },
+    "shellDeniedPatterns": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Glob patterns denied from shell CWD"
+    },
+    "networkDomains": {
+      "type": "array",
+      "items": { "type": "string", "format": "hostname" },
+      "uniqueItems": true,
+      "description": "Allowed outbound domains for network.fetch"
+    },
+    "settings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "label", "type"],
+        "properties": {
+          "key": { "type": "string" },
+          "label": { "type": "string" },
+          "type": { "type": "string", "enum": ["bool", "number", "enum", "string"] },
+          "default": {},
+          "options": { "type": "array" },
+          "min": { "type": "number" },
+          "max": { "type": "number" }
+        },
+        "additionalProperties": false
+      },
+      "description": "User-configurable settings schema"
+    },
+    "oauth": {
+      "type": "object",
+      "properties": {
+        "providers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "scopes"],
+            "properties": {
+              "id": { "type": "string" },
+              "scopes": { "type": "array", "items": { "type": "string" } },
+              "reason": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "description": "OAuth provider declarations"
+    },
+    "menubar": {
+      "type": "object",
+      "required": ["icon"],
+      "properties": {
+        "icon": { "type": "string", "description": "SF Symbol name" },
+        "label": { "type": "string" },
+        "globalShortcut": { "type": "string", "description": "Global keyboard shortcut" }
+      },
+      "additionalProperties": false,
+      "description": "Menu bar NSStatusItem configuration"
+    }
+  }
+}

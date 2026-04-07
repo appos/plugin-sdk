@@ -1,0 +1,25 @@
+{
+  "name": "@twopanez/plugin-types",
+  "version": "2.3.0",
+  "description": "TypeScript type definitions for the 2Panez Plugin API",
+  "types": "src/index.d.ts",
+  "files": [
+    "src/**/*.d.ts"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "test": "tsc --noEmit --project tsconfig.json"
+  },
+  "keywords": ["2panez", "plugin", "types", "typescript"],
+  "license": "MIT",
+  "author": "This Local, Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AppOS/plugin-sdk",
+    "directory": "packages/plugin-types"
+  },
+  "peerDependencies": {},
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
