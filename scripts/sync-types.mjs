@@ -44,8 +44,9 @@ if (content === existing) {
 
 writeFileSync(dest, content);
 
-// Extract version from source
-const versionMatch = content.match(/Version:\s*([\d.]+[-\w]*)/);
+// Extract version from source (supports both "@version X.Y.Z" and "Version: X.Y.Z")
+const versionMatch = content.match(/@version\s+([\d.]+[-\w]*)/) ||
+  content.match(/Version:\s*([\d.]+[-\w]*)/);
 const version = versionMatch ? versionMatch[1] : "unknown";
 
 const lines = content.split("\n").length;
