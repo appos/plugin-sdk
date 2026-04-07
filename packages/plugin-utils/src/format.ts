@@ -4,7 +4,8 @@ export function formatSize(bytes: number): string {
   const units = ["B", "KB", "MB", "GB", "TB"];
   const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
   const value = bytes / Math.pow(1024, i);
-  return `${value < 10 ? value.toFixed(1) : Math.round(value)} ${units[i]}`;
+  const formatted = value < 10 ? value.toFixed(1).replace(/\.0$/, "") : String(Math.round(value));
+  return `${formatted} ${units[i]}`;
 }
 
 /** Format ISO 8601 date to relative or short display string. */
@@ -21,6 +22,8 @@ export function formatDate(iso: string | null): string {
   if (diffHr < 24) return `${diffHr}h ago`;
   const diffDay = Math.floor(diffHr / 24);
   if (diffDay < 7) return `${diffDay}d ago`;
+  const diffWeek = Math.floor(diffDay / 7);
+  if (diffDay < 30) return `${diffWeek}w ago`;
 
   // Same year: "Mar 15", different year: "Mar 15, 2023"
   const sameYear = date.getFullYear() === now.getFullYear();
