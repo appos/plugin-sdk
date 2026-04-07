@@ -9,8 +9,52 @@
   },
   "manifest": {
     "idPattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*)+$",
-    "requiredFields": ["id", "name", "version", "runtime", "entrypoint"],
-    "maxPermissions": 33
+    "requiredFields": ["id", "name", "version", "runtime", "entrypoint"]
+  },
+  "permissions": {
+    "fixedScopes": [
+      "ui.sidebar",
+      "ui.statusBar",
+      "ui.contextMenu",
+      "ui.notifications",
+      "ui.sheets",
+      "ui.shortcuts",
+      "ui.themes",
+      "ui.preview",
+      "ui.aiChat",
+      "ui.webPanel",
+      "filesystem.read",
+      "filesystem.write",
+      "filesystem.watch",
+      "filesystem.readAll",
+      "filesystem.writeAll",
+      "shell.execute",
+      "shell.uncontained",
+      "clipboard.read",
+      "clipboard.write",
+      "network.outbound",
+      "network.unrestricted",
+      "keychain.plugin",
+      "interPlugin.declare",
+      "interPlugin.contribute",
+      "interPlugin.query",
+      "interPlugin.emit",
+      "workspaces",
+      "cache",
+      "feedback",
+      "feedback.confirm",
+      "oauth",
+      "menubar",
+      "menubar.globalShortcut",
+      "smartFolders"
+    ],
+    "dynamicFamilies": [
+      {
+        "prefix": "oauth.",
+        "description": "Dynamic OAuth provider scopes (e.g., oauth.github, oauth.google)",
+        "validationPattern": "^oauth\\.[A-Za-z0-9._-]+$"
+      }
+    ]
   },
   "code": {
     "requiredExports": ["globalThis.activate", "globalThis.deactivate"],
@@ -38,7 +82,8 @@
     "designTokenColors": [
       "ux_synapse", "ux_cortex", "ux_pulse", "ux_signal",
       "ux_warning", "ux_error", "ux_success", "ux_info"
-    ]
+    ],
+    "hexColorPattern": "^#[0-9A-Fa-f]{6}$"
   },
   "limits": {
     "storageSizePerValue": "1MB",
@@ -53,7 +98,7 @@
     "webPanelsGlobal": 6,
     "themesPerPlugin": 10,
     "batchOperationsMax": 1000,
-    "watchDebounceMin": 100,
+    "watchDebounceMin": 0,
     "watchDebounceMax": 5000,
     "watchDebounceDefault": 500
   }
