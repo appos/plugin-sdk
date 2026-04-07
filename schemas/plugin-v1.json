@@ -69,22 +69,29 @@
       "type": "array",
       "items": {
         "type": "string",
-        "enum": [
-          "ui.sidebar", "ui.statusBar", "ui.contextMenu", "ui.notifications",
-          "ui.sheets", "ui.shortcuts", "ui.themes", "ui.preview", "ui.aiChat", "ui.webPanel",
-          "filesystem.read", "filesystem.write", "filesystem.watch",
-          "filesystem.readAll", "filesystem.writeAll",
-          "shell.execute", "shell.uncontained",
-          "clipboard.read", "clipboard.write",
-          "network.outbound", "network.unrestricted",
-          "keychain.plugin",
-          "interPlugin.declare", "interPlugin.contribute", "interPlugin.query", "interPlugin.emit",
-          "workspaces", "cache", "feedback", "feedback.confirm",
-          "oauth", "menubar", "menubar.globalShortcut", "smartFolders"
+        "anyOf": [
+          {
+            "enum": [
+              "ui.sidebar", "ui.statusBar", "ui.contextMenu", "ui.notifications",
+              "ui.sheets", "ui.shortcuts", "ui.themes", "ui.preview", "ui.aiChat", "ui.webPanel",
+              "filesystem.read", "filesystem.write", "filesystem.watch",
+              "filesystem.readAll", "filesystem.writeAll",
+              "shell.execute", "shell.uncontained",
+              "clipboard.read", "clipboard.write",
+              "network.outbound", "network.unrestricted",
+              "keychain.plugin",
+              "interPlugin.declare", "interPlugin.contribute", "interPlugin.query", "interPlugin.emit",
+              "workspaces", "cache", "feedback", "feedback.confirm",
+              "oauth", "menubar", "menubar.globalShortcut", "smartFolders"
+            ]
+          },
+          {
+            "pattern": "^oauth\\.[A-Za-z0-9._-]+$"
+          }
         ]
       },
       "uniqueItems": true,
-      "description": "Required permission scopes"
+      "description": "Required permission scopes (fixed scopes + dynamic oauth.<provider> scopes)"
     },
     "shellCommands": {
       "type": "array",

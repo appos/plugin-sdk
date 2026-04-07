@@ -12,6 +12,8 @@
     "validate-schema": "node scripts/validate-schema.mjs"
   },
   "devDependencies": {
+    "ajv": "^8.18.0",
+    "ajv-formats": "^3.0.1",
     "typescript": "^5.4.0"
   },
   "engines": {
