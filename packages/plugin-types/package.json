@@ -2,9 +2,9 @@
   "name": "@appos/plugin-types",
   "version": "2.3.0",
   "description": "TypeScript type definitions for the 2Panez Plugin API",
-  "types": "src/index.d.ts",
+  "types": "dist/index.d.ts",
   "files": [
-    "src/**/*.d.ts"
+    "dist"
   ],
   "scripts": {
     "build": "tsc --project tsconfig.json",

@@ -13,7 +13,7 @@
   "license": "MIT",
   "author": "This Local, Inc.",
   "dependencies": {
-    "@appos/plugin-types": "workspace:*"
+    "@appos/plugin-types": "*"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

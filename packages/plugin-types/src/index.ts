@@ -15,4 +15,5 @@ export * from "./views";
 export * from "./namespaces";
 export * from "./permissions";
 export * from "./colors";
+export * from "./fonts";
 export * from "./icons";

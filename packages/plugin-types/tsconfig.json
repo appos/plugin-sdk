@@ -9,8 +9,8 @@
     "skipLibCheck": true,
     "emitDeclarationOnly": true,
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "composite": true
   },
-  "include": ["src/**/*.d.ts"],
-  "composite": true
+  "include": ["src/**/*.ts"]
 }

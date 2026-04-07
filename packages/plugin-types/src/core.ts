@@ -2,6 +2,7 @@
  * Core plugin types — lifecycle, context, manifest.
  */
 
+import type { PermissionScope } from "./permissions";
 import type { CommandsAPI } from "./namespaces";
 import type { FileOpsAPI } from "./namespaces";
 import type { UIAPI } from "./namespaces";

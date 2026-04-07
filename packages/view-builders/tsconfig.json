@@ -9,11 +9,11 @@
     "strict": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "composite": true
   },
   "include": ["src/**/*.ts"],
   "references": [
     { "path": "../plugin-types" }
-  ],
-  "composite": true
+  ]
 }
