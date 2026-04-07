@@ -5,6 +5,7 @@ import type {
   ProgressDescriptor,
   RemoteImageDescriptor,
 } from "@appos/plugin-types";
+import { stripUndefined } from "./util";
 
 export function divider(): DividerDescriptor {
   return { type: "divider" };
@@ -19,20 +20,23 @@ export function textField(opts?: {
   text?: string;
   action?: string;
 }): TextFieldDescriptor {
-  return { type: "textField", properties: { ...opts } };
+  const props = opts ? stripUndefined(opts) : {};
+  return { type: "textField", properties: props };
 }
 
 export function progress(opts?: {
   value?: number;
   label?: string;
+  style?: "bar" | "circular";
 }): ProgressDescriptor {
-  return { type: "progress", ...(opts && { properties: opts }) };
+  return { type: "progress", ...(opts && { properties: stripUndefined(opts) }) };
 }
 
 export function remoteImage(url: string, opts?: {
   width?: number;
   height?: number;
   cornerRadius?: number;
+  maxDimension?: number;
 }): RemoteImageDescriptor {
-  return { type: "remoteImage", properties: { url, ...opts } };
+  return { type: "remoteImage", properties: stripUndefined({ url, ...opts }) };
 }

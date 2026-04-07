@@ -1,14 +1,15 @@
-import type { MenuAction } from "@appos/plugin-types";
+import type { MenuAction, SFSymbolName } from "@appos/plugin-types";
+import { stripUndefined } from "./util";
 
 /**
  * Create a typed menu action for context menus.
  */
 export function menuAction(title: string, opts: {
-  icon?: string;
+  icon?: SFSymbolName;
   action: string;
   destructive?: boolean;
 }): MenuAction {
-  return { title, ...opts };
+  return stripUndefined({ title, ...opts });
 }
 
 /**

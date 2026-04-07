@@ -8,7 +8,9 @@ import type {
   ViewDescriptor,
   PluginFont,
   PluginColor,
+  SFSymbolName,
 } from "@appos/plugin-types";
+import { stripUndefined } from "./util";
 
 export function text(content: string, opts?: {
   font?: PluginFont;
@@ -17,24 +19,24 @@ export function text(content: string, opts?: {
   mono?: boolean;
   tooltip?: string;
 }): TextDescriptor {
-  return { type: "text", properties: { content, ...opts } };
+  return { type: "text", properties: stripUndefined({ content, ...opts }) };
 }
 
 export function label(title: string, opts?: {
-  icon?: string;
+  icon?: SFSymbolName;
   font?: PluginFont;
 }): LabelDescriptor {
-  return { type: "label", properties: { title, ...opts } };
+  return { type: "label", properties: stripUndefined({ title, ...opts }) };
 }
 
-export function image(systemName: string): ImageDescriptor {
+export function image(systemName: SFSymbolName): ImageDescriptor {
   return { type: "image", properties: { systemName } };
 }
 
 export function badge(textOrContent: string, opts?: {
   color?: PluginColor;
 }): BadgeDescriptor {
-  return { type: "badge", properties: { text: textOrContent, ...opts } };
+  return { type: "badge", properties: stripUndefined({ text: textOrContent, ...opts }) };
 }
 
 export function button(title: string, opts: {
@@ -42,19 +44,20 @@ export function button(title: string, opts: {
   tooltip?: string;
   width?: number;
 }): ButtonDescriptor {
-  return { type: "button", properties: { title, ...opts } };
+  return { type: "button", properties: stripUndefined({ title, ...opts }) };
 }
 
 export function listItem(title: string, opts?: {
   subtitle?: string;
-  icon?: string;
+  icon?: SFSymbolName;
   iconColor?: PluginColor;
   action?: string;
+  trailing?: string;
   menuActions?: string;
 }, children?: ViewDescriptor[]): ListItemDescriptor {
   return {
     type: "listItem",
-    properties: { title, ...opts },
+    properties: stripUndefined({ title, ...opts }),
     ...(children && { children }),
   };
 }
