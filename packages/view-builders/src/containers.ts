@@ -6,7 +6,7 @@ import type {
   ListDescriptor,
   GridDescriptor,
   SectionDescriptor,
-} from "@twopanez/plugin-types";
+} from "@appos/plugin-types";
 
 export function vstack(children: ViewDescriptor[], opts?: { spacing?: number }): VStackDescriptor {
   return { type: "vstack", children, ...(opts && { properties: opts }) };

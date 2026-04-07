@@ -1,5 +1,5 @@
 {
-  "name": "@twopanez/plugin-types",
+  "name": "@appos/plugin-types",
   "version": "2.3.0",
   "description": "TypeScript type definitions for the 2Panez Plugin API",
   "types": "src/index.d.ts",

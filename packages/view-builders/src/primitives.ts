@@ -4,7 +4,7 @@ import type {
   TextFieldDescriptor,
   ProgressDescriptor,
   RemoteImageDescriptor,
-} from "@twopanez/plugin-types";
+} from "@appos/plugin-types";
 
 export function divider(): DividerDescriptor {
   return { type: "divider" };

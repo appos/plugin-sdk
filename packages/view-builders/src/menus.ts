@@ -1,4 +1,4 @@
-import type { MenuAction } from "@twopanez/plugin-types";
+import type { MenuAction } from "@appos/plugin-types";
 
 /**
  * Create a typed menu action for context menus.

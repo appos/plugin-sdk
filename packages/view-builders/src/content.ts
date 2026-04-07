@@ -8,7 +8,7 @@ import type {
   ViewDescriptor,
   PluginFont,
   PluginColor,
-} from "@twopanez/plugin-types";
+} from "@appos/plugin-types";
 
 export function text(content: string, opts?: {
   font?: PluginFont;

@@ -8,16 +8,22 @@ Monorepo for the 2Panez Plugin SDK — developer-facing packages that make plugi
 
 | Package | Purpose | npm name |
 |---------|---------|----------|
-| `packages/plugin-types` | TypeScript type definitions for the full Plugin API (22 namespaces, 33 permissions) | `@twopanez/plugin-types` |
-| `packages/view-builders` | Typed ViewDescriptor builder helpers (`vstack()`, `listItem()`, etc.) | `@twopanez/view-builders` |
-| `packages/plugin-utils` | Shared utilities (path conversion, formatting, action routing) | `@twopanez/plugin-utils` |
+| `packages/plugin-types` | TypeScript type definitions for the full Plugin API (22 namespaces, 33 permissions). Platform-level — shared across all AppOS host apps. | `@appos/plugin-types` |
+| `packages/view-builders` | Typed ViewDescriptor builder helpers (`vstack()`, `listItem()`, etc.) | `@appos/view-builders` |
+| `packages/plugin-utils` | Shared utilities (path conversion, formatting, action routing). Host-agnostic. | `@appos/plugin-utils` |
 | `schemas/` | JSON Schema for plugin.json + machine-readable constraints | — |
 
-## Source of Truth
+## Source of Truth & Related Repos
 
-Types are derived from: `Bifocal/Sources/TwoPanez/Services/Plugins/plugin-api.d.ts`
+| Resource | Path | Purpose |
+|----------|------|---------|
+| **plugin-api.d.ts** | `~/Documents/GitHub/_90-percent-done/2Panes/Bifocal/Sources/TwoPanez/Services/Plugins/plugin-api.d.ts` | Canonical type definitions (2778 lines, v2.3.0-fn48). ALL types in this SDK must match. |
+| **DX Report** | `~/Documents/GitHub/AppOS/community-plugins/PLUGIN-DX-REPORT.md` | Assessment that motivated this SDK — P0 items are what this repo delivers |
+| **Community Plugins** | `~/Documents/GitHub/AppOS/community-plugins/plugins/` | 12 reference plugins with plugin.json manifests — use for schema validation testing |
+| **yt-dlp Plugin** | `~/Documents/GitHub/AppOS/appos-plugin-ytdlp/` | Flagship plugin that will import from this SDK — use for integration testing |
+| **extension-api.md** | `~/Documents/GitHub/AppOS/appos-claude-code-plugin/skills/twopanez-plugin-dev/reference/extension-api.md` | Human-readable API docs (v2.3.0-fn48) — types here should be consistent |
 
-Run `node scripts/sync-types.mjs` to pull the latest .d.ts for comparison.
+Run `node scripts/sync-types.mjs` to pull the latest .d.ts into `plugin-api.d.ts.reference` for diffing.
 
 ## Commands
 

@@ -1,5 +1,5 @@
 {
-  "name": "@twopanez/plugin-sdk",
+  "name": "@appos/plugin-sdk",
   "private": true,
   "workspaces": [
     "packages/*"

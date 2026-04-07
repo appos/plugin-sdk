@@ -1,10 +1,10 @@
 /**
- * @twopanez/view-builders — Typed ViewDescriptor builder helpers.
+ * @appos/view-builders — Typed ViewDescriptor builder helpers.
  *
  * Zero runtime cost: esbuild tree-shakes these to plain object literals.
  *
  * Usage:
- *   import { vstack, text, listItem, section, button } from "@twopanez/view-builders";
+ *   import { vstack, text, listItem, section, button } from "@appos/view-builders";
  *
  *   const view = vstack([
  *     section("Files", { icon: "doc.on.doc", badge: "3" }, [

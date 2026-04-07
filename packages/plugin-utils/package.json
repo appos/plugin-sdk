@@ -1,5 +1,5 @@
 {
-  "name": "@twopanez/plugin-utils",
+  "name": "@appos/plugin-utils",
   "version": "2.3.0",
   "description": "Common utility functions for 2Panez plugins",
   "main": "dist/index.js",

@@ -1,5 +1,5 @@
 {
-  "name": "@twopanez/view-builders",
+  "name": "@appos/view-builders",
   "version": "2.3.0",
   "description": "Typed ViewDescriptor builder helpers for 2Panez plugins",
   "main": "dist/index.js",
@@ -13,7 +13,7 @@
   "license": "MIT",
   "author": "This Local, Inc.",
   "dependencies": {
-    "@twopanez/plugin-types": "workspace:*"
+    "@appos/plugin-types": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.4.0"
