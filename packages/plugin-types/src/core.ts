@@ -138,6 +138,12 @@ export interface PluginManifest {
   oauth?: { providers: OAuthProviderDeclaration[] };
   /** Menu bar status item configuration (fn-41). */
   menubar?: { icon: string; label?: string; globalShortcut?: string };
+  /** Plugin homepage URL. */
+  homepage?: string;
+  /** Plugin Store categories. */
+  categories?: string[];
+  /** Search keywords for discoverability. */
+  keywords?: string[];
 }
 
 /** Events that can trigger plugin activation. */

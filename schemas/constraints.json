@@ -32,7 +32,9 @@
       "shell.uncontained",
       "clipboard.read",
       "clipboard.write",
+      "network",
       "network.outbound",
+      "network.fetch",
       "network.unrestricted",
       "keychain.plugin",
       "interPlugin.declare",
@@ -46,7 +48,8 @@
       "oauth",
       "menubar",
       "menubar.globalShortcut",
-      "smartFolders"
+      "smartFolders",
+      "webview"
     ],
     "dynamicFamilies": [
       {

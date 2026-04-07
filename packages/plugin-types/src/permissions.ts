@@ -26,7 +26,9 @@ export type PermissionScope =
   | "clipboard.read"
   | "clipboard.write"
   // Network
+  | "network"
   | "network.outbound"
+  | "network.fetch"
   | "network.unrestricted"
   // Keychain
   | "keychain.plugin"
@@ -44,4 +46,6 @@ export type PermissionScope =
   | `oauth.${string}`
   | "menubar"
   | "menubar.globalShortcut"
-  | "smartFolders";
+  | "smartFolders"
+  // WebView
+  | "webview";
