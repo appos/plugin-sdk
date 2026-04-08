@@ -151,7 +151,7 @@
                 "properties": {
                   "command": { "type": "string", "minLength": 1, "description": "Binary name to invoke (resolved via PATH)" },
                   "args": { "type": "array", "items": { "type": "string" }, "default": [], "description": "Arguments passed to the command" },
-                  "versionPattern": { "type": "string", "format": "regex", "description": "Regex with one capture group for version extraction" }
+                  "versionPattern": { "type": "string", "description": "Regex with one capture group for version extraction (optional — runtime uses fallback extraction when absent)" }
                 }
               },
               "minVersion": { "type": "string", "description": "Minimum required version string" },
@@ -160,13 +160,7 @@
               "installUrl": { "type": "string", "format": "uri", "description": "Link to installation documentation" },
               "description": { "type": "string", "description": "What this dependency enables" }
             },
-            "dependentSchemas": {
-              "minVersion": {
-                "properties": {
-                  "check": { "required": ["versionPattern"] }
-                }
-              }
-            }
+            "additionalProperties": false
           }
         },
         "plugins": {
