@@ -24,7 +24,7 @@
     },
     "version": {
       "type": "string",
-      "pattern": "^\\d+\\.\\d+\\.\\d+",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
       "description": "Semantic version (MAJOR.MINOR.PATCH)"
     },
     "runtime": {
@@ -38,7 +38,7 @@
     },
     "minHostVersion": {
       "type": "string",
-      "pattern": "^\\d+\\.\\d+\\.\\d+",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
       "description": "Minimum 2Panez version required"
     },
     "author": {
