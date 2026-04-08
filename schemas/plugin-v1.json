@@ -143,13 +143,13 @@
             "required": ["name", "check"],
             "additionalProperties": false,
             "properties": {
-              "name": { "type": "string", "description": "Human-readable tool name (e.g. yt-dlp)" },
+              "name": { "type": "string", "minLength": 1, "description": "Human-readable tool name (e.g. yt-dlp)" },
               "check": {
                 "type": "object",
                 "required": ["command"],
                 "additionalProperties": false,
                 "properties": {
-                  "command": { "type": "string", "description": "Binary name to invoke (resolved via PATH)" },
+                  "command": { "type": "string", "minLength": 1, "description": "Binary name to invoke (resolved via PATH)" },
                   "args": { "type": "array", "items": { "type": "string" }, "default": [], "description": "Arguments passed to the command" },
                   "versionPattern": { "type": "string", "format": "regex", "description": "Regex with one capture group for version extraction" }
                 }

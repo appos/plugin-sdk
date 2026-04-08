@@ -1,0 +1,15 @@
+{
+  "id": "com.test.emptycommand",
+  "name": "Empty Command Plugin",
+  "version": "1.0.0",
+  "runtime": "javascript",
+  "entrypoint": "dist/main.js",
+  "dependencies": {
+    "system": [
+      {
+        "name": "tool",
+        "check": { "command": "" }
+      }
+    ]
+  }
+}
