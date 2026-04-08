@@ -1,0 +1,16 @@
+{
+  "id": "com.test.nopattern",
+  "name": "No Pattern Plugin",
+  "version": "1.0.0",
+  "runtime": "javascript",
+  "entrypoint": "dist/main.js",
+  "dependencies": {
+    "system": [
+      {
+        "name": "tool",
+        "check": { "command": "tool", "args": ["--version"] },
+        "minVersion": "2.0.0"
+      }
+    ]
+  }
+}
