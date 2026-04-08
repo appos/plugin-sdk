@@ -13,7 +13,7 @@
     },
     "id": {
       "type": "string",
-      "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*)+$",
+      "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$",
       "description": "Reverse-domain identifier (e.g. com.community.myplugin)"
     },
     "name": {
@@ -151,7 +151,7 @@
                 "properties": {
                   "command": { "type": "string", "description": "Binary name to invoke (resolved via PATH)" },
                   "args": { "type": "array", "items": { "type": "string" }, "default": [], "description": "Arguments passed to the command" },
-                  "versionPattern": { "type": "string", "description": "Regex with one capture group for version extraction" }
+                  "versionPattern": { "type": "string", "format": "regex", "description": "Regex with one capture group for version extraction" }
                 }
               },
               "minVersion": { "type": "string", "description": "Minimum required version string" },
@@ -171,7 +171,7 @@
             "additionalProperties": false,
             "properties": {
               "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$", "description": "Dependency plugin ID (reverse-domain, allows hyphens)" },
-              "minVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+", "description": "Minimum version (semver)" },
+              "minVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "Minimum version (semver)" },
               "required": { "type": "boolean", "default": true }
             }
           }
