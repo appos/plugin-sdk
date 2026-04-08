@@ -130,6 +130,54 @@
       },
       "description": "User-configurable settings schema"
     },
+    "dependencies": {
+      "type": "object",
+      "description": "Declared dependencies on system binaries or other plugins",
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "type": "array",
+          "description": "System binary dependencies",
+          "items": {
+            "type": "object",
+            "required": ["name", "check"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "description": "Human-readable tool name (e.g. yt-dlp)" },
+              "check": {
+                "type": "object",
+                "required": ["command"],
+                "additionalProperties": false,
+                "properties": {
+                  "command": { "type": "string", "description": "Binary name to invoke (resolved via PATH)" },
+                  "args": { "type": "array", "items": { "type": "string" }, "default": [], "description": "Arguments passed to the command" },
+                  "versionPattern": { "type": "string", "description": "Regex with one capture group for version extraction" }
+                }
+              },
+              "minVersion": { "type": "string", "description": "Minimum required version string" },
+              "required": { "type": "boolean", "default": true, "description": "If false, plugin activates without this dep" },
+              "installHint": { "type": "string", "description": "Suggested install command (e.g. brew install yt-dlp)" },
+              "installUrl": { "type": "string", "format": "uri", "description": "Link to installation documentation" },
+              "description": { "type": "string", "description": "What this dependency enables" }
+            }
+          }
+        },
+        "plugins": {
+          "type": "array",
+          "description": "Plugin-to-plugin dependencies",
+          "items": {
+            "type": "object",
+            "required": ["id"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$", "description": "Dependency plugin ID (reverse-domain, allows hyphens)" },
+              "minVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+", "description": "Minimum version (semver)" },
+              "required": { "type": "boolean", "default": true }
+            }
+          }
+        }
+      }
+    },
     "oauth": {
       "type": "object",
       "required": ["providers"],
