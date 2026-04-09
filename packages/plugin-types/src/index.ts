@@ -1,7 +1,7 @@
 /**
  * @appos/plugin-types — Type definitions for the 2Panez Plugin API
  *
- * Version: 2.3.0-fn48
+ * Version: 2.4.0-fn50
  * Source of truth: Bifocal/Sources/TwoPanez/Services/Plugins/plugin-api.d.ts
  *
  * Usage:

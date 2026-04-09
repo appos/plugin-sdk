@@ -3,11 +3,11 @@
  * Each maps to a property on PluginContext.
  *
  * Source of truth: Bifocal/Sources/TwoPanez/Services/Plugins/plugin-api.d.ts
- * @version 2.3.0-fn48
+ * @version 2.4.0-fn50
  */
 
 import type { ViewDescriptor } from "./views";
-import type { PluginFileDescriptor } from "./core";
+import type { PluginFileDescriptor, DependencyStatus } from "./core";
 import type { SFSymbolName } from "./icons";
 
 // ============================================================================
@@ -896,6 +896,41 @@ export interface LifecycleAPI {
   onDependencyAvailable(depId: string, handler: () => void): void;
   /** Registers a handler called when a dependency becomes unavailable. */
   onDependencyUnavailable(depId: string, handler: () => void): void;
+
+  /**
+   * Returns the current status of all declared dependencies (system + plugin).
+   *
+   * Each entry includes installation state, version info, and satisfaction status.
+   * System dependencies are probed via `check.command`; plugin dependencies are
+   * resolved from the host's plugin registry.
+   *
+   * @returns Promise resolving to an array of dependency status objects.
+   */
+  getDependencyStatus(): Promise<DependencyStatus[]>;
+
+  /**
+   * Re-runs both system and plugin dependency checks and updates state.
+   *
+   * Call after the user installs a missing system dependency (e.g., `brew install yt-dlp`).
+   * If all required deps become satisfied, the plugin transitions from degraded to active.
+   * Fires `onDependencyStatusChanged` handlers if any status changed.
+   *
+   * @returns Promise resolving to the updated dependency status array.
+   */
+  recheckDependencies(): Promise<DependencyStatus[]>;
+
+  /**
+   * Registers a handler called when any dependency status changes.
+   *
+   * Fires on:
+   * - Host-side `recheckDependencies()` (manual or SwiftUI-triggered)
+   * - Plugin-side `recheckDependencies()` (JS bridge call)
+   * - Dependency plugin lifecycle changes (activate, deactivate, degraded)
+   *
+   * @param handler - Callback receiving the full updated status array.
+   * @returns A token string that can be used to identify the registration.
+   */
+  onDependencyStatusChanged(handler: (statuses: DependencyStatus[]) => void): string;
 }
 
 // ============================================================================
