@@ -1,16 +1,26 @@
 {
-  "name": "@appos/plugin-utils",
+  "name": "@appos.space/plugin-utils",
   "version": "2.3.0",
   "description": "Common utility functions for 2Panez plugins",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc --project tsconfig.json",
-    "test": "node --test dist/__tests__/*.test.js"
+    "test": "node --test dist/__tests__/*.test.js",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "2panez",

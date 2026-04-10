@@ -7,7 +7,7 @@ import type {
   GridDescriptor,
   SectionDescriptor,
   SFSymbolName,
-} from "@appos/plugin-types";
+} from "@appos.space/plugin-types";
 import { stripUndefined } from "./util.js";
 
 export function vstack(children: ViewDescriptor[], opts?: { spacing?: number }): VStackDescriptor {

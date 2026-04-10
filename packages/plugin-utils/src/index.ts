@@ -1,5 +1,5 @@
 /**
- * @appos/plugin-utils — Battle-tested utility functions for 2Panez plugins.
+ * @appos.space/plugin-utils — Battle-tested utility functions for 2Panez plugins.
  *
  * Eliminates duplicated helpers across plugins. All functions are pure
  * and tree-shakeable.

@@ -1,4 +1,4 @@
-import type { MenuAction, SFSymbolName } from "@appos/plugin-types";
+import type { MenuAction, SFSymbolName } from "@appos.space/plugin-types";
 import { stripUndefined } from "./util.js";
 
 /**

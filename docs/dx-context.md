@@ -10,9 +10,9 @@ An npm workspaces monorepo that extracts the 2Panez/AppOS plugin API into develo
 
 | Package | Lines | What it does |
 |---------|-------|-------------|
-| `@appos/plugin-types` | 894 | TypeScript `.d.ts` declarations for the full plugin API |
-| `@appos/view-builders` | 182 | Typed helper functions that produce ViewDescriptor JSON |
-| `@appos/plugin-utils` | 190 | Shared utilities replacing copy-pasted code across plugins |
+| `@appos.space/plugin-types` | 894 | TypeScript `.d.ts` declarations for the full plugin API |
+| `@appos.space/view-builders` | 182 | Typed helper functions that produce ViewDescriptor JSON |
+| `@appos.space/plugin-utils` | 190 | Shared utilities replacing copy-pasted code across plugins |
 | `schemas/` | 216 | JSON Schema for plugin.json + machine-readable constraints |
 
 Total: ~1,500 lines of authored code. No runtime dependencies.
@@ -51,7 +51,7 @@ The SDK does NOT vendor this file. It restructures the types into importable mod
 
 ### Why declaration-only for plugin-types?
 
-Plugin code runs in JavaScriptCore, not Node. The host injects the API at runtime via `PluginContext`. There is no JS module to import — only types. Making plugin-types `.d.ts`-only means zero bundle size impact on plugins, no risk of runtime code leaking into the JSC sandbox, and `/// <reference types="@appos/plugin-types" />` is all plugins need.
+Plugin code runs in JavaScriptCore, not Node. The host injects the API at runtime via `PluginContext`. There is no JS module to import — only types. Making plugin-types `.d.ts`-only means zero bundle size impact on plugins, no risk of runtime code leaking into the JSC sandbox, and `/// <reference types="@appos.space/plugin-types" />` is all plugins need.
 
 ### Why separate view-builders from plugin-types?
 
@@ -63,7 +63,7 @@ Utilities like `urlToPath()` and `formatSize()` are pure functions with no plugi
 
 ### Why `@appos` not `@twopanez`?
 
-The plugin system's manifest format, permission model, and Plugin Store protocol are platform-level concerns. A future mobile AppOS app would share these. The 2Panez-specific API surface (dual panes, shell tiers, NSStatusItem menubar) is host-level, but the types are currently combined in one package since there's only one host. If a second host emerges, `@appos/plugin-types` splits into shared + host-specific.
+The plugin system's manifest format, permission model, and Plugin Store protocol are platform-level concerns. A future mobile AppOS app would share these. The 2Panez-specific API surface (dual panes, shell tiers, NSStatusItem menubar) is host-level, but the types are currently combined in one package since there's only one host. If a second host emerges, `@appos.space/plugin-types` splits into shared + host-specific.
 
 ---
 
@@ -95,7 +95,7 @@ Understanding the runtime helps evaluate whether the types are correct.
 
 Key constraints this imposes on the SDK:
 
-- **No ES module imports at runtime.** Plugins are IIFE bundles. `@appos/plugin-types` is compile-time only.
+- **No ES module imports at runtime.** Plugins are IIFE bundles. `@appos.space/plugin-types` is compile-time only.
 - **No shared state.** Each plugin gets its own JSContext. Inter-plugin communication uses `dataContracts`, `extensionPoints`, and `interPluginEvents` namespaces.
 - **Serial execution.** Each plugin's queue is serial. Async methods return Promises that resolve when the host's actor-isolated services complete.
 - **No DOM.** UI is ViewDescriptor JSON, not HTML. The exception is WebView panels (fn-48) which get a WKWebView with a bridge API.
@@ -303,7 +303,7 @@ These are things a reviewer should flag opinions on:
 
 6. **No tests yet.** Tasks 14-17 cover tests. The scaffold is code-complete but unverified. A reviewer should flag any obvious bugs visible from reading the implementations, especially in `paths.ts` encoding logic and `format.ts` date math.
 
-7. **`workspace:*` dependency links.** The monorepo uses `"@appos/plugin-types": "workspace:*"` in view-builders' package.json. This works in npm workspaces but may need adjustment for consumers who install from a registry vs file path.
+7. **`workspace:*` dependency links.** The monorepo uses `"@appos.space/plugin-types": "workspace:*"` in view-builders' package.json. This works in npm workspaces but may need adjustment for consumers who install from a registry vs file path.
 
 ---
 
@@ -311,15 +311,15 @@ These are things a reviewer should flag opinions on:
 
 ```
                     ┌─────────────────────┐
-                    │  @appos/plugin-types │  (declaration-only)
+                    │  @appos.space/plugin-types │  (declaration-only)
                     └──────────┬──────────┘
                                │ types only
                     ┌──────────▼──────────┐
-                    │ @appos/view-builders │  (runtime: builder fns)
+                    │ @appos.space/view-builders │  (runtime: builder fns)
                     └─────────────────────┘
 
                     ┌─────────────────────┐
-                    │  @appos/plugin-utils │  (standalone, no deps)
+                    │  @appos.space/plugin-utils │  (standalone, no deps)
                     └─────────────────────┘
 
                     ┌─────────────────────┐
@@ -331,9 +331,9 @@ A plugin's typical dependency graph:
 
 ```
 my-plugin
-├── @appos/plugin-types     (devDependency — types only)
-├── @appos/view-builders    (dependency — runtime helpers)
-└── @appos/plugin-utils     (dependency — runtime utilities)
+├── @appos.space/plugin-types     (devDependency — types only)
+├── @appos.space/view-builders    (dependency — runtime helpers)
+└── @appos.space/plugin-utils     (dependency — runtime utilities)
 ```
 
 All three are tree-shakeable. A minimal plugin that only uses `text()` and `urlToPath()` should see near-zero bundle size increase after esbuild dead-code elimination.

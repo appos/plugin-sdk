@@ -75,26 +75,26 @@ if (!existsSync(resolve(ytdlpDir, "package.json"))) {
 console.log(`\nChecking dependencies...`);
 const pkg = JSON.parse(readFileSync(resolve(ytdlpDir, "package.json"), "utf8"));
 
-if (pkg.devDependencies?.["@appos/plugin-types"]) {
-  pass("@appos/plugin-types in devDependencies");
+if (pkg.devDependencies?.["@appos.space/plugin-types"]) {
+  pass("@appos.space/plugin-types in devDependencies");
 } else {
-  fail("@appos/plugin-types NOT in devDependencies");
+  fail("@appos.space/plugin-types NOT in devDependencies");
 }
 
-if (pkg.dependencies?.["@appos/plugin-types"]) {
-  fail("@appos/plugin-types should be in devDependencies, not dependencies");
+if (pkg.dependencies?.["@appos.space/plugin-types"]) {
+  fail("@appos.space/plugin-types should be in devDependencies, not dependencies");
 }
 
-if (pkg.dependencies?.["@appos/plugin-utils"]) {
-  pass("@appos/plugin-utils in dependencies");
+if (pkg.dependencies?.["@appos.space/plugin-utils"]) {
+  pass("@appos.space/plugin-utils in dependencies");
 } else {
-  fail("@appos/plugin-utils NOT in dependencies");
+  fail("@appos.space/plugin-utils NOT in dependencies");
 }
 
-if (pkg.dependencies?.["@appos/view-builders"]) {
-  pass("@appos/view-builders in dependencies");
+if (pkg.dependencies?.["@appos.space/view-builders"]) {
+  pass("@appos.space/view-builders in dependencies");
 } else {
-  fail("@appos/view-builders NOT in dependencies");
+  fail("@appos.space/view-builders NOT in dependencies");
 }
 
 // ── Check source files use SDK imports ────────────────────────
@@ -121,13 +121,13 @@ for (const file of filesToCheck) {
   if (!existsSync(filePath)) continue;
   const content = readFileSync(filePath, "utf8");
 
-  if (content.includes("from '@appos/plugin-types'") || content.includes('from "@appos/plugin-types"')) {
+  if (content.includes("from '@appos.space/plugin-types'") || content.includes('from "@appos.space/plugin-types"')) {
     hasPluginTypesImport = true;
   }
-  if (content.includes("from '@appos/plugin-utils'") || content.includes('from "@appos/plugin-utils"')) {
+  if (content.includes("from '@appos.space/plugin-utils'") || content.includes('from "@appos.space/plugin-utils"')) {
     hasPluginUtilsImport = true;
   }
-  if (content.includes("from '@appos/view-builders'") || content.includes('from "@appos/view-builders"')) {
+  if (content.includes("from '@appos.space/view-builders'") || content.includes('from "@appos.space/view-builders"')) {
     hasViewBuildersImport = true;
   }
   // Check for inline PluginContext interface definition (not an import)
@@ -137,16 +137,16 @@ for (const file of filesToCheck) {
 }
 
 hasPluginTypesImport
-  ? pass("At least one file uses import from @appos/plugin-types")
-  : fail("No file uses import from @appos/plugin-types");
+  ? pass("At least one file uses import from @appos.space/plugin-types")
+  : fail("No file uses import from @appos.space/plugin-types");
 
 hasPluginUtilsImport
-  ? pass("At least one file uses import from @appos/plugin-utils")
-  : fail("No file uses import from @appos/plugin-utils");
+  ? pass("At least one file uses import from @appos.space/plugin-utils")
+  : fail("No file uses import from @appos.space/plugin-utils");
 
 hasViewBuildersImport
-  ? pass("At least one file uses import from @appos/view-builders")
-  : fail("No file uses import from @appos/view-builders");
+  ? pass("At least one file uses import from @appos.space/view-builders")
+  : fail("No file uses import from @appos.space/view-builders");
 
 hasInlinePluginContext
   ? fail("Inline PluginContext interface definition found in src/")
@@ -177,15 +177,15 @@ if (existsSync(distPath)) {
   const bundle = readFileSync(distPath, "utf8");
 
   bundle.includes("fileExtension")
-    ? pass("Bundle contains fileExtension from @appos/plugin-utils")
+    ? pass("Bundle contains fileExtension from @appos.space/plugin-utils")
     : fail("Bundle missing fileExtension -- plugin-utils not bundled");
 
   bundle.includes("createActionRouter")
-    ? pass("Bundle contains createActionRouter from @appos/plugin-utils")
+    ? pass("Bundle contains createActionRouter from @appos.space/plugin-utils")
     : fail("Bundle missing createActionRouter -- plugin-utils not bundled");
 
   bundle.includes("vstack")
-    ? pass("Bundle contains vstack from @appos/view-builders")
+    ? pass("Bundle contains vstack from @appos.space/view-builders")
     : fail("Bundle missing vstack -- view-builders not bundled");
 
   bundle.includes("stripUndefined")

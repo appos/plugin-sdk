@@ -8,9 +8,9 @@ Monorepo for the 2Panez Plugin SDK — developer-facing packages that make plugi
 
 | Package | Purpose | npm name |
 |---------|---------|----------|
-| `packages/plugin-types` | TypeScript type definitions for the full Plugin API (22 namespaces, 33 permissions). Platform-level — shared across all AppOS host apps. | `@appos/plugin-types` |
-| `packages/view-builders` | Typed ViewDescriptor builder helpers (`vstack()`, `listItem()`, etc.) | `@appos/view-builders` |
-| `packages/plugin-utils` | Shared utilities (path conversion, formatting, action routing). Host-agnostic. | `@appos/plugin-utils` |
+| `packages/plugin-types` | TypeScript type definitions for the full Plugin API (22 namespaces, 33 permissions). Platform-level — shared across all AppOS host apps. | `@appos.space/plugin-types` |
+| `packages/view-builders` | Typed ViewDescriptor builder helpers (`vstack()`, `listItem()`, etc.) | `@appos.space/view-builders` |
+| `packages/plugin-utils` | Shared utilities (path conversion, formatting, action routing). Host-agnostic. | `@appos.space/plugin-utils` |
 | `schemas/` | JSON Schema for plugin.json + machine-readable constraints | — |
 
 ## Source of Truth & Related Repos

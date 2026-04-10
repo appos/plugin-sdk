@@ -1,5 +1,5 @@
 {
-  "name": "@appos/plugin-sdk",
+  "name": "@appos.space/plugin-sdk",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -9,7 +9,10 @@
     "test": "npm run test --workspaces --if-present",
     "lint": "tsc --noEmit --project tsconfig.json",
     "sync-types": "node scripts/sync-types.mjs",
-    "validate-schema": "node scripts/validate-schema.mjs"
+    "validate-schema": "node scripts/validate-schema.mjs",
+    "publish:all": "npm run build && npm publish --workspaces --access public",
+    "publish:dry": "npm run build && npm publish --workspaces --access public --dry-run",
+    "version:bump": "npm version --workspaces --include-workspace-root"
   },
   "devDependencies": {
     "ajv": "^8.18.0",

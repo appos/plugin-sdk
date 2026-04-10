@@ -9,7 +9,7 @@ import type {
   PluginFont,
   PluginColor,
   SFSymbolName,
-} from "@appos/plugin-types";
+} from "@appos.space/plugin-types";
 import { stripUndefined } from "./util.js";
 
 export function text(content: string, opts?: {
