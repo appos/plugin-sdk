@@ -1,0 +1,40 @@
+{
+  "name": "@appos.space/plugin-types",
+  "version": "2.4.0",
+  "description": "TypeScript type definitions for the AppOS Plugin API",
+  "main": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "test": "tsc --project tsconfig.test.json",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "appos",
+    "plugin",
+    "types",
+    "typescript"
+  ],
+  "license": "MIT",
+  "author": "InstantlyEasy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/appos/plugin-sdk.git",
+    "directory": "packages/plugin-types"
+  },
+  "peerDependencies": {},
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

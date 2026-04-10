@@ -1,0 +1,45 @@
+{
+  "name": "@appos.space/view-builders",
+  "version": "2.3.0",
+  "description": "Typed ViewDescriptor builder helpers for AppOS plugins",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "test": "tsc --project tsconfig.test.json && node --test test-dist/__tests__/*.test.js",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/appos/plugin-sdk.git",
+    "directory": "packages/view-builders"
+  },
+  "keywords": [
+    "appos",
+    "plugin",
+    "viewdescriptor",
+    "ui",
+    "builders"
+  ],
+  "license": "MIT",
+  "author": "InstantlyEasy",
+  "dependencies": {
+    "@appos.space/plugin-types": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

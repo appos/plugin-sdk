@@ -1,0 +1,30 @@
+# Note: package.json "files" field is the primary allowlist (dist only).
+# This .npmignore is belt-and-suspenders to ensure nothing internal leaks.
+
+# Source and build metadata
+src/
+test-dist/
+tsconfig.json
+tsconfig.test.json
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# Tests
+**/__tests__/
+**/*.test.*
+
+# Agent / internal tooling
+.claude/
+.flow/
+CLAUDE.md
+AGENTS.md
+AGENT.md
+GEMINI.md
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log

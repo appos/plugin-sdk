@@ -1,0 +1,36 @@
+{
+  "id": "com.community.ytdlp",
+  "name": "yt-dlp Plugin",
+  "version": "1.0.0",
+  "runtime": "javascript",
+  "entrypoint": "dist/main.js",
+  "permissions": ["shell.execute"],
+  "shellCommands": ["yt-dlp", "ffmpeg"],
+  "dependencies": {
+    "system": [
+      {
+        "name": "yt-dlp",
+        "check": { "command": "yt-dlp", "args": ["--version"], "versionPattern": "^(\\d{4}\\.\\d{2}\\.\\d{2})" },
+        "minVersion": "2024.01.01",
+        "required": true,
+        "installHint": "brew install yt-dlp",
+        "installUrl": "https://github.com/yt-dlp/yt-dlp#installation",
+        "description": "Video/audio downloader"
+      },
+      {
+        "name": "ffmpeg",
+        "check": { "command": "ffmpeg", "args": ["-version"], "versionPattern": "ffmpeg version (\\S+)" },
+        "required": false,
+        "installHint": "brew install ffmpeg",
+        "description": "Media transcoding (optional, enables format conversion)"
+      }
+    ],
+    "plugins": [
+      {
+        "id": "com.community.shared-utils",
+        "minVersion": "1.0.0",
+        "required": true
+      }
+    ]
+  }
+}

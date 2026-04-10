@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+test-dist/
+*.tsbuildinfo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Agent / internal tooling (not for public release)
+.claude/
+.flow/
+CLAUDE.md
+AGENTS.md
+AGENT.md
+GEMINI.md
+docs/dx-context.md
+
+# npm pack artifacts
+*.tgz
+
+# Dev-only diffing artifact (refreshed by scripts/sync-types.mjs)
+plugin-api.d.ts.reference

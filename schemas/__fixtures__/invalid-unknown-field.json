@@ -1,0 +1,8 @@
+{
+  "id": "com.test.unknownfield",
+  "name": "Unknown Field Plugin",
+  "version": "1.0.0",
+  "runtime": "javascript",
+  "entrypoint": "dist/main.js",
+  "bogusField": true
+}

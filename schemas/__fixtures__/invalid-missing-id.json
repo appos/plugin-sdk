@@ -1,0 +1,6 @@
+{
+  "name": "Missing ID Plugin",
+  "version": "1.0.0",
+  "runtime": "javascript",
+  "entrypoint": "dist/main.js"
+}

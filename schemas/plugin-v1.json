@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://appos.space/schemas/plugin-v1.json",
+  "title": "AppOS Plugin Manifest",
+  "description": "Schema for plugin.json — the manifest file required by every AppOS plugin.",
+  "type": "object",
+  "required": ["id", "name", "version", "runtime", "entrypoint"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference (optional, for editor autocomplete)"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$",
+      "description": "Reverse-domain identifier (e.g. com.community.myplugin)"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Human-readable display name"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version (MAJOR.MINOR.PATCH)"
+    },
+    "runtime": {
+      "type": "string",
+      "enum": ["javascript"],
+      "description": "Plugin runtime (currently only 'javascript')"
+    },
+    "entrypoint": {
+      "type": "string",
+      "description": "Path to the compiled JS bundle (e.g. dist/main.js)"
+    },
+    "minHostVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Minimum AppOS host version required"
+    },
+    "author": {
+      "type": "string",
+      "description": "Plugin author name"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 256,
+      "description": "Brief description"
+    },
+    "license": {
+      "type": "string",
+      "description": "SPDX license identifier (e.g. MIT, Apache-2.0)"
+    },
+    "activation": {
+      "type": "object",
+      "required": ["events"],
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["onStartup"] },
+          "description": "When to activate (currently only onStartup)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "anyOf": [
+          {
+            "enum": [
+              "ui.sidebar", "ui.statusBar", "ui.contextMenu", "ui.notifications",
+              "ui.sheets", "ui.shortcuts", "ui.themes", "ui.preview", "ui.aiChat", "ui.webPanel",
+              "filesystem.read", "filesystem.write", "filesystem.watch",
+              "filesystem.readAll", "filesystem.writeAll",
+              "shell.execute", "shell.uncontained",
+              "clipboard.read", "clipboard.write",
+              "network", "network.outbound", "network.fetch", "network.unrestricted",
+              "keychain.plugin",
+              "interPlugin.declare", "interPlugin.contribute", "interPlugin.query", "interPlugin.emit",
+              "workspaces", "cache", "feedback", "feedback.confirm",
+              "oauth", "menubar", "menubar.globalShortcut", "smartFolders",
+              "webview"
+            ]
+          },
+          {
+            "pattern": "^oauth\\.[A-Za-z0-9._-]+$"
+          }
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Required permission scopes (fixed scopes + dynamic oauth.<provider> scopes)"
+    },
+    "shellCommands": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "description": "Allowed shell command names for shell.execute"
+    },
+    "shellDeniedPatterns": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Glob patterns denied from shell CWD"
+    },
+    "networkDomains": {
+      "type": "array",
+      "items": { "type": "string", "format": "hostname" },
+      "uniqueItems": true,
+      "description": "Allowed outbound domains for network.fetch"
+    },
+    "settings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "label", "type"],
+        "properties": {
+          "key": { "type": "string" },
+          "label": { "type": "string" },
+          "type": { "type": "string", "enum": ["bool", "number", "enum", "string"] },
+          "default": {},
+          "options": { "type": "array" },
+          "min": { "type": "number" },
+          "max": { "type": "number" }
+        },
+        "additionalProperties": false
+      },
+      "description": "User-configurable settings schema"
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Declared dependencies on system binaries or other plugins",
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "type": "array",
+          "description": "System binary dependencies",
+          "items": {
+            "type": "object",
+            "required": ["name", "check"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "minLength": 1, "description": "Human-readable tool name (e.g. yt-dlp)" },
+              "check": {
+                "type": "object",
+                "required": ["command"],
+                "additionalProperties": false,
+                "properties": {
+                  "command": { "type": "string", "minLength": 1, "description": "Binary name to invoke (resolved via PATH)" },
+                  "args": { "type": "array", "items": { "type": "string" }, "default": [], "description": "Arguments passed to the command" },
+                  "versionPattern": { "type": "string", "description": "Regex with one capture group for version extraction (optional — runtime uses fallback extraction when absent)" }
+                }
+              },
+              "minVersion": { "type": "string", "description": "Minimum required version string" },
+              "required": { "type": "boolean", "default": true, "description": "If false, plugin activates without this dep" },
+              "installHint": { "type": "string", "description": "Suggested install command (e.g. brew install yt-dlp)" },
+              "installUrl": { "type": "string", "format": "uri", "description": "Link to installation documentation" },
+              "description": { "type": "string", "description": "What this dependency enables" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "plugins": {
+          "type": "array",
+          "description": "Plugin-to-plugin dependencies",
+          "items": {
+            "type": "object",
+            "required": ["id"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$", "description": "Dependency plugin ID (reverse-domain, allows hyphens)" },
+              "minVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "Minimum version (semver)" },
+              "required": { "type": "boolean", "default": true }
+            }
+          }
+        }
+      }
+    },
+    "oauth": {
+      "type": "object",
+      "required": ["providers"],
+      "properties": {
+        "providers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "scopes"],
+            "properties": {
+              "id": { "type": "string" },
+              "scopes": { "type": "array", "items": { "type": "string" } },
+              "reason": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "description": "OAuth provider declarations"
+    },
+    "menubar": {
+      "type": "object",
+      "required": ["icon"],
+      "properties": {
+        "icon": { "type": "string", "description": "SF Symbol name" },
+        "label": { "type": "string" },
+        "globalShortcut": { "type": "string", "description": "Global keyboard shortcut" }
+      },
+      "additionalProperties": false,
+      "description": "Menu bar NSStatusItem configuration"
+    },
+    "homepage": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to the plugin's homepage or repository"
+    },
+    "categories": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "description": "Plugin Store category tags"
+    },
+    "keywords": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "description": "Search keywords for discoverability"
+    }
+  }
+}
