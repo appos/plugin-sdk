@@ -395,6 +395,8 @@ export interface UIAPI {
   registerToolbarItem(id: string, options: ToolbarItemOptions): string;
   /** Registers a file row annotation provider. */
   registerFileRowAnnotation(id: string, options: FileRowAnnotationOptions): string;
+  /** Registers a profile contribution. Returns a SlotToken id for `unregister`. */
+  registerProfile(options: unknown): string;
 
   // ── Notifications & sheets ───────────────────────────
   /** Shows a notification toast. */
@@ -413,33 +415,34 @@ export interface UIAPI {
   hidePaneTab(id: string): string;
 
   // ── Viewers ──────────────────────────────────────────
-  /** Opens a file in an in-pane viewer tab. */
-  openInPane(url: string, options?: { pane?: "left" | "right"; mode?: "view" }): void;
-  /** Opens a terminal tab at the given working directory. */
-  openTerminal(workingDirectory: string, options?: { pane?: "left" | "right" }): void;
-  /** Opens a code editor tab for the given file URL. */
-  openEditor(url: string, options?: { pane?: "left" | "right" }): void;
-  /** Opens a web browser tab for the given URL. */
-  openWebView(url: string, options?: { pane?: "left" | "right" }): void;
-  /** Opens a markdown preview tab for the given file URL. */
-  openMarkdownPreview(url: string, options?: { pane?: "left" | "right" }): void;
-  /** Opens a new AI chat pane tab with optional prefill. */
+  // All open* methods return a viewer id (sync) for correlation/unregister.
+  /** Opens a file in an in-pane viewer tab. Returns a viewer id. */
+  openInPane(url: string, options?: { pane?: "left" | "right"; mode?: "view" }): string;
+  /** Opens a terminal tab at the given working directory. Returns a viewer id. */
+  openTerminal(workingDirectory: string, options?: { pane?: "left" | "right" }): string;
+  /** Opens a code editor tab for the given file URL. Returns a viewer id. */
+  openEditor(url: string, options?: { pane?: "left" | "right" }): string;
+  /** Opens a web browser tab for the given URL. Returns a viewer id. */
+  openWebView(url: string, options?: { pane?: "left" | "right" }): string;
+  /** Opens a markdown preview tab for the given file URL. Returns a viewer id. */
+  openMarkdownPreview(url: string, options?: { pane?: "left" | "right" }): string;
+  /** Opens a new AI chat pane tab with optional prefill. Returns a viewer id. */
   openAIChat(options?: {
     pane?: "left" | "right";
     connector?: string;
     systemPrompt?: string;
     context?: string[];
-  }): void;
+  }): string;
 
   // ── WebView Panels (fn-48) ───────────────────────────
-  /** Registers a WebView panel definition. */
-  registerWebPanel(id: string, options: WebPanelOptions): void;
+  /** Registers a WebView panel definition. Returns a registration id. */
+  registerWebPanel(id: string, options: WebPanelOptions): string;
   /** Posts a JSON message to active WebView instances of a panel. */
-  postToWebPanel(panelId: string, message: unknown, options?: { instanceId?: string }): void;
-  /** Registers a fire-and-forget message handler for WebView messages. */
-  onWebPanelMessage(panelId: string, handler: (message: WebPanelMessage) => void): void;
-  /** Registers a request/response handler for WebView messages. */
-  onWebPanelRequest(panelId: string, handler: (message: WebPanelMessage) => unknown | Promise<unknown>): void;
+  postToWebPanel(panelId: string, message: unknown, options?: { instanceId?: string }): unknown;
+  /** Registers a fire-and-forget message handler for WebView messages. Returns a token. */
+  onWebPanelMessage(panelId: string, handler: (message: WebPanelMessage) => void): string;
+  /** Registers a request/response handler for WebView messages. Returns a token. */
+  onWebPanelRequest(panelId: string, handler: (message: WebPanelMessage) => unknown | Promise<unknown>): string;
   /** Pipes shell output to WebView panel instances. */
   pipeShellToWebPanel(panelId: string, shellOptions: ShellExecuteOptions): Promise<ShellExecuteResult>;
 }
@@ -448,6 +451,14 @@ export interface UIAPI {
 // storage
 // ============================================================================
 
+/**
+ * Legacy synchronous key-value storage tier.
+ *
+ * For durable, namespaced, Promise-shaped document/KV storage with query,
+ * compaction, and export/import, use `context.store` (fn-71 `StoreAPI`) —
+ * the storage plane every core plugin builds on. `storage.*` remains
+ * supported for simple small values.
+ */
 export interface StorageAPI {
   /** Gets a value from the plugin's scoped storage. */
   get(key: string): unknown | null;
@@ -502,11 +513,79 @@ export interface FileOpCompletedPayload {
   initiatorPluginId: string;
 }
 
+/**
+ * Topic declaration spec for the fn-70 typed event bus.
+ */
+export interface TopicSpec {
+  /** Topic name (namespaced by the declaring plugin). */
+  name: string;
+  /** JSON schema for event payload validation. */
+  schema?: unknown;
+  /** Retention policy (e.g., `{ mode: "bounded", count: 50 }`, `"session"`, `"none"`). */
+  retention?: unknown;
+  /** Delivery mode: "atMostOnce" | "atLeastOnce" (retry/backoff/dead-letter) | "ordered" (partitioned). */
+  delivery?: "atMostOnce" | "atLeastOnce" | "ordered";
+  /** Additional declaration fields. */
+  [key: string]: unknown;
+}
+
+/**
+ * Topic metadata row returned by `events.listTopics()`.
+ */
+export interface TopicInfo {
+  /** Qualified topic name. */
+  name: string;
+  /** Declaring plugin id. */
+  ownerPluginId?: string;
+  /** Additional metadata fields. */
+  [key: string]: unknown;
+}
+
+/**
+ * Envelope delivered to `subscribeTopic` handlers and returned by `replay`.
+ */
+export interface EventEnvelope {
+  /** Topic name. */
+  topic: string;
+  /** Event payload (schema-validated at emit). */
+  payload: unknown;
+  /** Emitting plugin id. */
+  emittedBy?: string;
+  /** Emit timestamp (ISO 8601). */
+  ts?: string;
+  /** Unique event id. */
+  eventId?: string;
+  /** Optional emit metadata. */
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Host events (legacy pair) + the fn-70 typed event bus.
+ *
+ * The legacy `subscribe`/`unsubscribe` pair is a PERMANENT alias (ADR-001)
+ * — it is not deprecated, but new inter-plugin messaging should use the
+ * typed-bus methods, which add schema validation, retention, and delivery
+ * modes. Typed-bus scopes: `events.topic.declare`, `events.emit`,
+ * `events.subscribe`, `events.replay`, `events.inspect`, plus contributor
+ * scopes `events.serializer.register` / `events.sink.register`.
+ */
 export interface EventsAPI {
   /** Subscribes to a host event. Returns subscription token. */
   subscribe(eventName: string, handler: (payload: unknown) => void): string;
   /** Cancels a host event subscription. */
   unsubscribe(token: string): void;
+
+  // ── Typed event bus (fn-70) ──────────────────────────
+  /** Declares a schema-registered topic. [events.topic.declare] */
+  declareTopic(spec: TopicSpec): Promise<void>;
+  /** Emits a payload to a declared topic. [events.emit] */
+  emitTopic(name: string, payload: unknown, metadata?: Record<string, unknown>): Promise<void>;
+  /** Subscribes to a topic. Resolves to a subscription token. [events.subscribe] */
+  subscribeTopic(name: string, handler: (envelope: EventEnvelope) => void): Promise<string>;
+  /** Replays retained events for a topic. [events.replay] */
+  replay(name: string, opts?: { limit?: number; since?: string }): Promise<EventEnvelope[]>;
+  /** Lists visible declared topics. [events.inspect] */
+  listTopics(): Promise<TopicInfo[]>;
 }
 
 // ============================================================================
@@ -567,11 +646,124 @@ export interface ShellAPI {
 // clipboard
 // ============================================================================
 
+/** A captured clipboard history item (fn-91). */
+export interface ClipItem {
+  /** Clip id. */
+  id: string;
+  /** Content kind (e.g., "text", "image", or `custom(pluginId, typeId)` tombstones). */
+  kind?: string;
+  /** Inline content, when present (large payloads live behind blob refs). */
+  content?: unknown;
+  /** Capture timestamp (ISO 8601). */
+  capturedAt?: string;
+  /** User-favorite flag. */
+  isFavorite?: boolean;
+  /** User tags. */
+  tags?: string[];
+  /** Additional fields. */
+  [key: string]: unknown;
+}
+
+/** A registered paste destination (fn-91). */
+export interface ClipDestination {
+  /** Destination id. */
+  id: string;
+  /** Display name. */
+  name?: string;
+  /** Additional fields. */
+  [key: string]: unknown;
+}
+
+/** A named Context Bundle of clips for AI-agent injection (fn-91). */
+export interface ClipboardContextBundle {
+  /** Bundle id. */
+  id: string;
+  /** Bundle name. */
+  name?: string;
+  /** Member clip ids (missing members export as tombstones). */
+  clipIds?: string[];
+  /** Additional fields. */
+  [key: string]: unknown;
+}
+
+/**
+ * System pasteboard access plus the fn-91 Core Clipboard engine (history
+ * search + Context Bundles + registration sub-bridges).
+ *
+ * v1 QUIRKS: `sources.register` and `destinations.register` are
+ * DECLARATIVE-ONLY (metadata registration; no executable callback), and
+ * `clipboard.contentType` contributions are manifest-only (no JS bridge).
+ * Read-shaped cross-plugin denials degrade gracefully (`[]` / `null`);
+ * write/export-shaped denials throw sanitized `unknownRef`.
+ */
 export interface ClipboardAPI {
-  /** Reads the current clipboard string content. */
+  /** Reads the current clipboard string content. [clipboard.read] */
   read(): Promise<string | null>;
-  /** Clears the clipboard and writes the given string. */
+  /** Clears the clipboard and writes the given string. [clipboard.write] */
   write(text: string): Promise<boolean>;
+  /** Pastes a history clip into a registered destination. [clipboard.history.read] */
+  paste(clipId: string, destinationId: string): Promise<unknown>;
+  /** Lists registered paste destinations. */
+  listDestinations(): Promise<ClipDestination[]>;
+  /** Ingests content into history programmatically. [clipboard.history.write] */
+  ingest(kind: string, content: unknown, metadata?: Record<string, unknown>): Promise<ClipItem>;
+
+  /** Clipboard history engine (fn-91). */
+  history: {
+    /** Queries history. [clipboard.history.read] */
+    query(filter: unknown): Promise<ClipItem[]>;
+    /** Gets a clip, or null. [clipboard.history.read] */
+    get(id: string): Promise<ClipItem | null>;
+    /** Subscribes to capture events. [clipboard.history.subscribe] */
+    subscribe(handler: (clip: ClipItem) => void): Promise<{ cancel(): Promise<void> }>;
+    /** Deletes a clip. [clipboard.history.write] */
+    delete(id: string): Promise<boolean>;
+    /** Sets the favorite flag. [clipboard.history.write] */
+    favorite(id: string, isFavorite: boolean): Promise<void>;
+    /** Replaces the tag set. [clipboard.history.write] */
+    tag(id: string, tags: string[]): Promise<void>;
+  };
+
+  /** Context Bundles (fn-91). All methods require [clipboard.bundles]. */
+  bundles: {
+    /** Creates a bundle. */
+    create(name: string): Promise<ClipboardContextBundle>;
+    /** Updates a bundle. */
+    update(bundle: ClipboardContextBundle): Promise<ClipboardContextBundle>;
+    /** Adds a clip to a bundle. */
+    addClip(bundleId: string, clipId: string, notes?: string): Promise<void>;
+    /** Removes a clip from a bundle. */
+    removeClip(bundleId: string, clipId: string): Promise<void>;
+    /** Exports a bundle ("markdown" | "json" | "xml" | "plainText"). */
+    export(bundleId: string, format: string): Promise<unknown>;
+    /** Lists own bundles. */
+    list(): Promise<ClipboardContextBundle[]>;
+    /** Gets a bundle. */
+    get(bundleId: string): Promise<ClipboardContextBundle | null>;
+    /** Deletes a bundle. */
+    delete(bundleId: string): Promise<void>;
+  };
+
+  /** Transform contributors. [clipboard.transform.register] */
+  transforms: {
+    register(definition: unknown, handler: (clip: ClipItem) => unknown): Promise<{ cancel(): Promise<void> }>;
+  };
+  /** Capture-rule contributors. [clipboard.rule.register] */
+  rules: {
+    register(definition: unknown, handler: (clip: ClipItem) => unknown): Promise<{ cancel(): Promise<void> }>;
+  };
+  /** Retention-predicate contributors. [clipboard.retention.predicate.register] */
+  retentionPredicates: {
+    register(definition: unknown, predicate: (clip: ClipItem) => boolean | Promise<boolean>): Promise<{ cancel(): Promise<void> }>;
+  };
+  /** Source contributors — DECLARATIVE-ONLY in v1. [clipboard.source.register] */
+  sources: {
+    register(definition: unknown): Promise<{ cancel(): Promise<void> }>;
+  };
+  /** Destination contributors — DECLARATIVE-ONLY in v1. [clipboard.destination.register] */
+  destinations: {
+    register(definition: unknown): Promise<{ cancel(): Promise<void> }>;
+  };
 }
 
 // ============================================================================
@@ -607,6 +799,14 @@ export interface NetworkAPI {
   fetch(url: string, options?: NetworkFetchOptions): Promise<NetworkResponse>;
   /** Downloads a URL to a local file path. Returns the destination path. */
   download(url: string, destPath: string): Promise<string>;
+  /**
+   * Executes a server-held URLRequest previously built by
+   * `vault.buildRequest(...)` or `oauth.buildAuthenticatedRequest(...)`.
+   *
+   * The `requestId` is single-use; the host holds the actual request
+   * (including any injected credentials) so JS never sees raw tokens.
+   */
+  executeRequest(requestId: string): Promise<NetworkResponse>;
 }
 
 // ============================================================================
@@ -1193,6 +1393,28 @@ export interface OAuthTokenResult {
   scopes: string[];
 }
 
+/**
+ * Discriminated-union token result from the secure OAuth methods.
+ *
+ * - `mode: "direct"` — the raw token is returned inline (legacy-compatible).
+ * - `mode: "vault"` — the token lives in the fn-72 Vault; JS receives an
+ *   opaque handle and should use `oauth.buildAuthenticatedRequest(...)` +
+ *   `network.executeRequest(...)` so the raw token never crosses into JS.
+ */
+export type OAuthSecureTokenResult =
+  | ({ mode: "direct" } & OAuthTokenResult)
+  | {
+      mode: "vault";
+      /** Opaque vault handle for the stored token. */
+      handleId: string;
+      /** Token type (typically "Bearer"). */
+      tokenType?: string;
+      /** Expiry timestamp in ISO 8601 format, or null. */
+      expiresAt?: string | null;
+      /** Granted scopes. */
+      scopes?: string[];
+    };
+
 export interface OAuthAPI {
   /** Starts OAuth 2.0 + PKCE flow. Opens system browser. */
   authorize(provider: string, options: OAuthAuthorizeOptions): Promise<OAuthTokenResult>;
@@ -1202,6 +1424,20 @@ export interface OAuthAPI {
   revoke(provider: string): Promise<true>;
   /** Checks if a non-expired token exists. */
   isAuthorized(provider: string): Promise<boolean>;
+  /**
+   * Vault-aware authorize (fn-72). Returns a mode-discriminated result —
+   * `"vault"` mode keeps the raw token host-side.
+   */
+  authorizeSecure(provider: string, options?: OAuthAuthorizeOptions): Promise<OAuthSecureTokenResult>;
+  /** Vault-aware token read. Null when not authorized / expired. */
+  getTokenSecure(provider: string): Promise<OAuthSecureTokenResult | null>;
+  /**
+   * Builds a server-held authenticated URLRequest for the provider's stored
+   * token. Returns a single-use `requestId` to pass to
+   * `network.executeRequest(...)`. Requires the oauth + network permissions
+   * (NOT vault.* scopes); JS never sees the raw token.
+   */
+  buildAuthenticatedRequest(provider: string, descriptor: unknown): Promise<string>;
 }
 
 // ============================================================================

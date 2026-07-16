@@ -4,7 +4,12 @@
   "title": "AppOS Plugin Manifest",
   "description": "Schema for plugin.json — the manifest file required by every AppOS plugin.",
   "type": "object",
-  "required": ["id", "name", "version", "runtime", "entrypoint"],
+  "required": [
+    "id",
+    "name",
+    "version",
+    "runtime"
+  ],
   "additionalProperties": false,
   "properties": {
     "$schema": {
@@ -29,12 +34,15 @@
     },
     "runtime": {
       "type": "string",
-      "enum": ["javascript"],
-      "description": "Plugin runtime (currently only 'javascript')"
+      "enum": [
+        "javascript",
+        "core-swift"
+      ],
+      "description": "Plugin runtime. Third-party plugins use 'javascript'; 'core-swift' is reserved for host-bundled core plugins."
     },
     "entrypoint": {
       "type": "string",
-      "description": "Path to the compiled JS bundle (e.g. dist/main.js)"
+      "description": "Path to the compiled JS bundle (e.g. dist/main.js). Required for 'javascript' runtime; absent for 'core-swift'."
     },
     "minHostVersion": {
       "type": "string",
@@ -56,11 +64,18 @@
     },
     "activation": {
       "type": "object",
-      "required": ["events"],
+      "required": [
+        "events"
+      ],
       "properties": {
         "events": {
           "type": "array",
-          "items": { "type": "string", "enum": ["onStartup"] },
+          "items": {
+            "type": "string",
+            "enum": [
+              "onStartup"
+            ]
+          },
           "description": "When to activate (currently only onStartup)"
         }
       },
@@ -69,46 +84,351 @@
     "permissions": {
       "type": "array",
       "items": {
-        "type": "string",
         "anyOf": [
           {
-            "enum": [
-              "ui.sidebar", "ui.statusBar", "ui.contextMenu", "ui.notifications",
-              "ui.sheets", "ui.shortcuts", "ui.themes", "ui.preview", "ui.aiChat", "ui.webPanel",
-              "filesystem.read", "filesystem.write", "filesystem.watch",
-              "filesystem.readAll", "filesystem.writeAll",
-              "shell.execute", "shell.uncontained",
-              "clipboard.read", "clipboard.write",
-              "network", "network.outbound", "network.fetch", "network.unrestricted",
-              "keychain.plugin",
-              "interPlugin.declare", "interPlugin.contribute", "interPlugin.query", "interPlugin.emit",
-              "workspaces", "cache", "feedback", "feedback.confirm",
-              "oauth", "menubar", "menubar.globalShortcut", "smartFolders",
-              "webview"
+            "type": "string",
+            "anyOf": [
+              {
+                "enum": [
+                  "ui.sidebar",
+                  "ui.statusBar",
+                  "ui.toolbar",
+                  "ui.contextMenu",
+                  "ui.notifications",
+                  "ui.sheets",
+                  "ui.shortcuts",
+                  "ui.themes",
+                  "ui.preview",
+                  "ui.aiChat",
+                  "ui.webPanel",
+                  "ui.settings",
+                  "filesystem.read",
+                  "filesystem.write",
+                  "filesystem.watch",
+                  "filesystem.readAll",
+                  "filesystem.writeAll",
+                  "shell.execute",
+                  "clipboard.read",
+                  "clipboard.write",
+                  "clipboard.history.read",
+                  "clipboard.history.subscribe",
+                  "clipboard.history.write",
+                  "clipboard.bundles",
+                  "clipboard.contentType.register",
+                  "clipboard.source.register",
+                  "clipboard.transform.register",
+                  "clipboard.destination.register",
+                  "clipboard.rule.register",
+                  "clipboard.retention.predicate.register",
+                  "network.outbound",
+                  "network.unrestricted",
+                  "keychain.plugin",
+                  "interPlugin.declare",
+                  "interPlugin.contribute",
+                  "interPlugin.query",
+                  "interPlugin.emit",
+                  "workspaces",
+                  "cache",
+                  "feedback",
+                  "feedback.confirm",
+                  "oauth",
+                  "menubar",
+                  "menubar.globalShortcut",
+                  "events.topic.declare",
+                  "events.emit",
+                  "events.subscribe",
+                  "events.replay",
+                  "events.inspect",
+                  "events.serializer.register",
+                  "events.sink.register",
+                  "store.namespace.own",
+                  "store.namespace.declare",
+                  "store.namespace.shared.read",
+                  "store.namespace.enumerate",
+                  "store.backend.register",
+                  "store.migrator.register",
+                  "store.indexer.register",
+                  "vault.store",
+                  "vault.read",
+                  "vault.list",
+                  "vault.share",
+                  "vault.audit",
+                  "vault.type.register",
+                  "vault.bridge.register",
+                  "vault.rotator.register",
+                  "vault.policy.contribute",
+                  "actions.register",
+                  "actions.invoke",
+                  "actions.invoke.agent",
+                  "actions.list",
+                  "palette.contribute.scope",
+                  "palette.history",
+                  "scheduler.job.own",
+                  "scheduler.job.enumerate",
+                  "scheduler.trigger.register",
+                  "scheduler.condition.register",
+                  "scheduler.action.register",
+                  "resources.provider.register",
+                  "resources.read",
+                  "resources.watch",
+                  "tokens.provider.register",
+                  "context.compose",
+                  "entities.type.register",
+                  "entities.read",
+                  "entities.write",
+                  "entities.field.attach.own",
+                  "entities.field.attach.shared",
+                  "entities.computedField.provide",
+                  "ledger.read.own",
+                  "ledger.read.shared",
+                  "views.register",
+                  "views.read",
+                  "views.layoutRenderer.register",
+                  "surfaces.contribute.sidebar.top",
+                  "surfaces.contribute.sidebar.bottom",
+                  "surfaces.contribute.pane.dashboard",
+                  "surfaces.contribute.status.left",
+                  "sidecars.definition.register",
+                  "sidecars.instance.start",
+                  "sidecars.instance.stop",
+                  "sidecars.protocol.wrap",
+                  "notifications.emit",
+                  "notifications.channel.register",
+                  "notifications.filter.register",
+                  "notifications.action.register",
+                  "notifications.log.read",
+                  "input.subscribe.messages",
+                  "input.subscribe.intents",
+                  "input.reply",
+                  "input.channel.register",
+                  "input.parser.register",
+                  "input.intent.register",
+                  "input.auth.register",
+                  "webhook.route.register",
+                  "webhook.route.register.unsigned",
+                  "webhook.outbound.send",
+                  "webhook.log.read",
+                  "webhook.tunnel.read",
+                  "webhook.tunnel.register",
+                  "webhook.signer.register",
+                  "llm.complete",
+                  "llm.stream",
+                  "llm.embed",
+                  "llm.vision",
+                  "llm.agent",
+                  "llm.ledger.read",
+                  "llm.provider.register",
+                  "llm.preprocessor.register",
+                  "llm.postprocessor.register",
+                  "llm.router.register",
+                  "recipes.register",
+                  "recipes.run",
+                  "sequences.register",
+                  "sequences.run",
+                  "network",
+                  "network.fetch",
+                  "shell.uncontained",
+                  "smartFolders",
+                  "webview"
+                ]
+              },
+              {
+                "pattern": "^oauth\\.[A-Za-z0-9._-]+$"
+              }
             ]
           },
           {
-            "pattern": "^oauth\\.[A-Za-z0-9._-]+$"
+            "type": "object",
+            "required": [
+              "scope"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "scope": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "enum": [
+                      "ui.sidebar",
+                      "ui.statusBar",
+                      "ui.toolbar",
+                      "ui.contextMenu",
+                      "ui.notifications",
+                      "ui.sheets",
+                      "ui.shortcuts",
+                      "ui.themes",
+                      "ui.preview",
+                      "ui.aiChat",
+                      "ui.webPanel",
+                      "ui.settings",
+                      "filesystem.read",
+                      "filesystem.write",
+                      "filesystem.watch",
+                      "filesystem.readAll",
+                      "filesystem.writeAll",
+                      "shell.execute",
+                      "clipboard.read",
+                      "clipboard.write",
+                      "clipboard.history.read",
+                      "clipboard.history.subscribe",
+                      "clipboard.history.write",
+                      "clipboard.bundles",
+                      "clipboard.contentType.register",
+                      "clipboard.source.register",
+                      "clipboard.transform.register",
+                      "clipboard.destination.register",
+                      "clipboard.rule.register",
+                      "clipboard.retention.predicate.register",
+                      "network.outbound",
+                      "network.unrestricted",
+                      "keychain.plugin",
+                      "interPlugin.declare",
+                      "interPlugin.contribute",
+                      "interPlugin.query",
+                      "interPlugin.emit",
+                      "workspaces",
+                      "cache",
+                      "feedback",
+                      "feedback.confirm",
+                      "oauth",
+                      "menubar",
+                      "menubar.globalShortcut",
+                      "events.topic.declare",
+                      "events.emit",
+                      "events.subscribe",
+                      "events.replay",
+                      "events.inspect",
+                      "events.serializer.register",
+                      "events.sink.register",
+                      "store.namespace.own",
+                      "store.namespace.declare",
+                      "store.namespace.shared.read",
+                      "store.namespace.enumerate",
+                      "store.backend.register",
+                      "store.migrator.register",
+                      "store.indexer.register",
+                      "vault.store",
+                      "vault.read",
+                      "vault.list",
+                      "vault.share",
+                      "vault.audit",
+                      "vault.type.register",
+                      "vault.bridge.register",
+                      "vault.rotator.register",
+                      "vault.policy.contribute",
+                      "actions.register",
+                      "actions.invoke",
+                      "actions.invoke.agent",
+                      "actions.list",
+                      "palette.contribute.scope",
+                      "palette.history",
+                      "scheduler.job.own",
+                      "scheduler.job.enumerate",
+                      "scheduler.trigger.register",
+                      "scheduler.condition.register",
+                      "scheduler.action.register",
+                      "resources.provider.register",
+                      "resources.read",
+                      "resources.watch",
+                      "tokens.provider.register",
+                      "context.compose",
+                      "entities.type.register",
+                      "entities.read",
+                      "entities.write",
+                      "entities.field.attach.own",
+                      "entities.field.attach.shared",
+                      "entities.computedField.provide",
+                      "ledger.read.own",
+                      "ledger.read.shared",
+                      "views.register",
+                      "views.read",
+                      "views.layoutRenderer.register",
+                      "surfaces.contribute.sidebar.top",
+                      "surfaces.contribute.sidebar.bottom",
+                      "surfaces.contribute.pane.dashboard",
+                      "surfaces.contribute.status.left",
+                      "sidecars.definition.register",
+                      "sidecars.instance.start",
+                      "sidecars.instance.stop",
+                      "sidecars.protocol.wrap",
+                      "notifications.emit",
+                      "notifications.channel.register",
+                      "notifications.filter.register",
+                      "notifications.action.register",
+                      "notifications.log.read",
+                      "input.subscribe.messages",
+                      "input.subscribe.intents",
+                      "input.reply",
+                      "input.channel.register",
+                      "input.parser.register",
+                      "input.intent.register",
+                      "input.auth.register",
+                      "webhook.route.register",
+                      "webhook.route.register.unsigned",
+                      "webhook.outbound.send",
+                      "webhook.log.read",
+                      "webhook.tunnel.read",
+                      "webhook.tunnel.register",
+                      "webhook.signer.register",
+                      "llm.complete",
+                      "llm.stream",
+                      "llm.embed",
+                      "llm.vision",
+                      "llm.agent",
+                      "llm.ledger.read",
+                      "llm.provider.register",
+                      "llm.preprocessor.register",
+                      "llm.postprocessor.register",
+                      "llm.router.register",
+                      "recipes.register",
+                      "recipes.run",
+                      "sequences.register",
+                      "sequences.run",
+                      "network",
+                      "network.fetch",
+                      "shell.uncontained",
+                      "smartFolders",
+                      "webview"
+                    ]
+                  },
+                  {
+                    "pattern": "^oauth\\.[A-Za-z0-9._-]+$"
+                  }
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 120,
+                "description": "Brief reason why this permission is needed (shown in the approval sheet)"
+              }
+            }
           }
         ]
       },
-      "uniqueItems": true,
-      "description": "Required permission scopes (fixed scopes + dynamic oauth.<provider> scopes)"
+      "description": "Required permission scopes. Each entry is a scope string (135 canonical scopes + legacy aliases + dynamic oauth.<provider>) or a {scope, reason} object."
     },
     "shellCommands": {
       "type": "array",
-      "items": { "type": "string", "minLength": 1 },
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
       "uniqueItems": true,
       "description": "Allowed shell command names for shell.execute"
     },
     "shellDeniedPatterns": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Glob patterns denied from shell CWD"
     },
     "networkDomains": {
       "type": "array",
-      "items": { "type": "string", "format": "hostname" },
+      "items": {
+        "type": "string",
+        "format": "hostname"
+      },
       "uniqueItems": true,
       "description": "Allowed outbound domains for network.fetch"
     },
@@ -116,15 +436,37 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["key", "label", "type"],
+        "required": [
+          "key",
+          "label",
+          "type"
+        ],
         "properties": {
-          "key": { "type": "string" },
-          "label": { "type": "string" },
-          "type": { "type": "string", "enum": ["bool", "number", "enum", "string"] },
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "bool",
+              "number",
+              "enum",
+              "string"
+            ]
+          },
           "default": {},
-          "options": { "type": "array" },
-          "min": { "type": "number" },
-          "max": { "type": "number" }
+          "options": {
+            "type": "array"
+          },
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          }
         },
         "additionalProperties": false
       },
@@ -140,27 +482,66 @@
           "description": "System binary dependencies",
           "items": {
             "type": "object",
-            "required": ["name", "check"],
+            "required": [
+              "name",
+              "check"
+            ],
             "additionalProperties": false,
             "properties": {
-              "name": { "type": "string", "minLength": 1, "description": "Human-readable tool name (e.g. yt-dlp)" },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Human-readable tool name (e.g. yt-dlp)"
+              },
               "check": {
                 "type": "object",
-                "required": ["command"],
+                "required": [
+                  "command"
+                ],
                 "additionalProperties": false,
                 "properties": {
-                  "command": { "type": "string", "minLength": 1, "description": "Binary name to invoke (resolved via PATH)" },
-                  "args": { "type": "array", "items": { "type": "string" }, "default": [], "description": "Arguments passed to the command" },
-                  "versionPattern": { "type": "string", "description": "Regex with one capture group for version extraction (optional — runtime uses fallback extraction when absent)" }
+                  "command": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Binary name to invoke (resolved via PATH)"
+                  },
+                  "args": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "default": [],
+                    "description": "Arguments passed to the command"
+                  },
+                  "versionPattern": {
+                    "type": "string",
+                    "description": "Regex with one capture group for version extraction (optional — runtime uses fallback extraction when absent)"
+                  }
                 }
               },
-              "minVersion": { "type": "string", "description": "Minimum required version string" },
-              "required": { "type": "boolean", "default": true, "description": "If false, plugin activates without this dep" },
-              "installHint": { "type": "string", "description": "Suggested install command (e.g. brew install yt-dlp)" },
-              "installUrl": { "type": "string", "format": "uri", "description": "Link to installation documentation" },
-              "description": { "type": "string", "description": "What this dependency enables" }
-            },
-            "additionalProperties": false
+              "minVersion": {
+                "type": "string",
+                "description": "Minimum required version string"
+              },
+              "required": {
+                "type": "boolean",
+                "default": true,
+                "description": "If false, plugin activates without this dep"
+              },
+              "installHint": {
+                "type": "string",
+                "description": "Suggested install command (e.g. brew install yt-dlp)"
+              },
+              "installUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Link to installation documentation"
+              },
+              "description": {
+                "type": "string",
+                "description": "What this dependency enables"
+              }
+            }
           }
         },
         "plugins": {
@@ -168,12 +549,25 @@
           "description": "Plugin-to-plugin dependencies",
           "items": {
             "type": "object",
-            "required": ["id"],
+            "required": [
+              "id"
+            ],
             "additionalProperties": false,
             "properties": {
-              "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$", "description": "Dependency plugin ID (reverse-domain, allows hyphens)" },
-              "minVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "Minimum version (semver)" },
-              "required": { "type": "boolean", "default": true }
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$",
+                "description": "Dependency plugin ID (reverse-domain, allows hyphens)"
+              },
+              "minVersion": {
+                "type": "string",
+                "pattern": "^\\d+\\.\\d+\\.\\d+$",
+                "description": "Minimum version (semver)"
+              },
+              "required": {
+                "type": "boolean",
+                "default": true
+              }
             }
           }
         }
@@ -181,17 +575,31 @@
     },
     "oauth": {
       "type": "object",
-      "required": ["providers"],
+      "required": [
+        "providers"
+      ],
       "properties": {
         "providers": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["id", "scopes"],
+            "required": [
+              "id",
+              "scopes"
+            ],
             "properties": {
-              "id": { "type": "string" },
-              "scopes": { "type": "array", "items": { "type": "string" } },
-              "reason": { "type": "string" }
+              "id": {
+                "type": "string"
+              },
+              "scopes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "reason": {
+                "type": "string"
+              }
             },
             "additionalProperties": false
           }
@@ -202,11 +610,21 @@
     },
     "menubar": {
       "type": "object",
-      "required": ["icon"],
+      "required": [
+        "icon"
+      ],
       "properties": {
-        "icon": { "type": "string", "description": "SF Symbol name" },
-        "label": { "type": "string" },
-        "globalShortcut": { "type": "string", "description": "Global keyboard shortcut" }
+        "icon": {
+          "type": "string",
+          "description": "SF Symbol name"
+        },
+        "label": {
+          "type": "string"
+        },
+        "globalShortcut": {
+          "type": "string",
+          "description": "Global keyboard shortcut"
+        }
       },
       "additionalProperties": false,
       "description": "Menu bar NSStatusItem configuration"
@@ -218,15 +636,133 @@
     },
     "categories": {
       "type": "array",
-      "items": { "type": "string", "minLength": 1 },
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
       "uniqueItems": true,
       "description": "Plugin Store category tags"
     },
     "keywords": {
       "type": "array",
-      "items": { "type": "string", "minLength": 1 },
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
       "uniqueItems": true,
       "description": "Search keywords for discoverability"
+    },
+    "repository": {
+      "type": "string",
+      "format": "uri",
+      "description": "Repository URL"
+    },
+    "capabilities": {
+      "type": "object",
+      "description": "Dynamic capabilities dictionary"
+    },
+    "extensionPoints": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Extension points declared by this plugin"
+    },
+    "dataContracts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Data contracts declared by this plugin"
+    },
+    "extensions": {
+      "type": "array",
+      "description": "Extension contributions (fn-12 typed array) — the manifest-declarative delivery vehicle for core-plugin extension points (actions.definition, views.savedView, surfaces.contribution, sidecars.definition, notifications.*, input.*, ledger.*, llm.*, recipes/sequences definitions, clipboard EPs, scheduler.triggerKind/condition, entities.*)",
+      "items": {
+        "type": "object",
+        "required": [
+          "extensionPoint"
+        ],
+        "properties": {
+          "extensionPoint": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Qualified extension point id (e.g. 'space.appos.core.notifications:channel')"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "shortcuts": {
+      "type": "array",
+      "description": "Manifest-declared keyboard shortcuts, auto-registered at activation (requires ui.shortcuts)",
+      "items": {
+        "type": "object",
+        "required": [
+          "commandId",
+          "keys"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "commandId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Short command ID (auto-prefixed with '{pluginId}.')"
+          },
+          "keys": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Shortcut key string (e.g. 'cmd+shift+t')"
+          },
+          "when": {
+            "type": "string",
+            "description": "Optional condition string"
+          }
+        }
+      }
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "window",
+        "app"
+      ],
+      "default": "app",
+      "description": "Plugin scope: 'window' (per-window instance) or 'app' (single shared instance, default)"
+    },
+    "isolation": {
+      "type": "string",
+      "enum": [
+        "jscontext",
+        "xpc"
+      ],
+      "default": "jscontext",
+      "description": "Isolation mechanism: 'jscontext' (in-process, default) or 'xpc' (reserved; parsed but not enforced)"
+    },
+    "allowedShellCommands": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "description": "Allowed shell commands for core-plugin shellExecute enforcement (core-swift only; absent/empty = deny-all)"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "runtime": {
+            "const": "javascript"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "entrypoint"
+        ]
+      }
+    }
+  ]
 }

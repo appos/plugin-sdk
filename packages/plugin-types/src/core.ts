@@ -1,10 +1,10 @@
 /**
  * Core plugin types — lifecycle, context, manifest.
  *
- * @version 2.4.0-fn50
+ * @version 3.0.0
  */
 
-import type { PermissionScope } from "./permissions";
+import type { PermissionScope, PermissionEntry } from "./permissions";
 import type {
   CommandsAPI,
   FileOpsAPI,
@@ -29,6 +29,30 @@ import type {
   OAuthAPI,
   MenubarAPI,
 } from "./namespaces";
+import type {
+  AnyJSONValue,
+  StoreAPI,
+  VaultAPI,
+  ActionsAPI,
+  PaletteAPI,
+  SchedulerAPI,
+  ResourcesAPI,
+  TokensAPI,
+  BundlesAPI,
+  EntitiesAPI,
+  FieldsAPI,
+  LedgerAPI,
+  ViewsAPI,
+  SurfacesAPI,
+  ProtocolsAPI,
+  NotificationsAPI,
+  InputAPI,
+  WebhookAPI,
+  LLMAPI,
+  RecipesAPI,
+  SequencesAPI,
+  FileSystemAPI,
+} from "./namespaces-core-plugins";
 
 // ============================================================================
 // Plugin Context
@@ -37,8 +61,9 @@ import type {
 /**
  * The main plugin context object passed to `activate(context)`.
  *
- * Provides access to all 22 API namespaces plus read-only metadata
- * about the plugin and host environment.
+ * Provides access to all 43 API namespaces plus read-only metadata
+ * about the plugin and host environment. Mirrors the host's
+ * `PluginContextExport` (Swift JSExport — ground truth).
  */
 export interface PluginContext {
   /** Unique plugin identifier (e.g., "com.example.my-plugin"). */
@@ -92,6 +117,53 @@ export interface PluginContext {
   readonly oauth: OAuthAPI;
   /** Menu bar NSStatusItem management (fn-41). Requires `menubar`. */
   readonly menubar: MenubarAPI;
+
+  // ── Core-plugin namespaces (fn-70 .. fn-101) ─────────────────────────
+  /** Durable Promise-shaped document/KV store (fn-71). Requires `store.*`. */
+  readonly store: StoreAPI;
+  /** Credential vault (fn-72). Requires `vault.*`. */
+  readonly vault: VaultAPI;
+  /** Public Action Fabric (fn-89). Requires `actions.*`. */
+  readonly actions: ActionsAPI;
+  /** Command palette integration for public actions (fn-89). */
+  readonly palette: PaletteAPI;
+  /** Job scheduling engine (fn-90). Requires `scheduler.job.own`. */
+  readonly scheduler: SchedulerAPI;
+  /** URI-addressable resource read plane (fn-92). Requires `resources.*`. */
+  readonly resources: ResourcesAPI;
+  /** Dotted-path token providers + template resolution (fn-92). */
+  readonly tokens: TokensAPI;
+  /**
+   * ContextBundle composition (fn-92). Requires `context.compose`.
+   * NOTE: distinct from `clipboard.bundles` (fn-91).
+   */
+  readonly bundles: BundlesAPI;
+  /** Entity resolution plane (fn-93). Requires `entities.*`. */
+  readonly entities: EntitiesAPI;
+  /** Plugin-attached entity fields (fn-93). Requires `entities.*`. */
+  readonly fields: FieldsAPI;
+  /** Execution / approval ledger reads (fn-94). Requires `ledger.read.*`. */
+  readonly ledger: LedgerAPI;
+  /** Host-rendered Saved Views (fn-95). Requires `views.*`. */
+  readonly views: ViewsAPI;
+  /** Surface contributions (fn-95). Runtime methods reject in v1 — use manifest `extensions[]`. */
+  readonly surfaces: SurfacesAPI;
+  /** Protocol sidecar subprocesses (fn-96). Requires `sidecars.*`. */
+  readonly protocols: ProtocolsAPI;
+  /** Outbound notifications (fn-97). Requires `notifications.*`. */
+  readonly notifications: NotificationsAPI;
+  /** Inbound input channels (fn-98). Requires `input.*`. */
+  readonly input: InputAPI;
+  /** Bidirectional webhook gateway (fn-99/fn-118). Requires `webhook.*`. */
+  readonly webhook: WebhookAPI;
+  /** LLM provider verbs + contributor registries (fn-100). Requires `llm.*`. */
+  readonly llm: LLMAPI;
+  /** Recipe definitions + runs (fn-101). Requires `recipes.*`. */
+  readonly recipes: RecipesAPI;
+  /** Sequence definitions + runs (fn-101). Requires `sequences.*`. */
+  readonly sequences: SequencesAPI;
+  /** Filesystem/transfer-strategy provider stub — core-swift only; throws for JS plugins. */
+  readonly fileSystem: FileSystemAPI;
 }
 
 // ============================================================================
@@ -236,6 +308,42 @@ export interface PluginDependencies {
 // ============================================================================
 
 /**
+ * A declared contribution to an extension point (fn-12 typed array).
+ *
+ * This is the manifest delivery vehicle for every wave-6b–8b declarative
+ * contribution: `actions.definition` (fn-89), `scheduler.triggerKind` /
+ * `scheduler.condition` (fn-90), clipboard EPs (fn-91), `entities.*` EPs
+ * (fn-93), `ledger.artifactPreview` / `ledger.redactionRule` (fn-94),
+ * `views.savedView` + `surfaces.contribution` (fn-95), `sidecars.definition`
+ * (fn-96), `notifications.{channel,filter,route,action}` (fn-97),
+ * `input.{channel,parser,intent,auth}` (fn-98), LLM provider/pre/post/router
+ * contributions (fn-100), and `recipes.definition` / `sequences.definition` /
+ * `recipes.trigger` (fn-101).
+ */
+export interface PluginExtensionContribution {
+  /** Qualified extension point id (e.g., "space.appos.core.notifications:channel"). */
+  extensionPoint: string;
+  /** Contribution payload — shape is defined per extension point. */
+  [key: string]: AnyJSONValue | undefined;
+}
+
+/**
+ * A keyboard shortcut declared in the manifest for auto-registration.
+ * Requires `ui.shortcuts` permission; silently skipped if not granted.
+ */
+export interface ManifestShortcut {
+  /** Short command ID (auto-prefixed with `{pluginId}.` during registration). */
+  commandId: string;
+  /** Shortcut key string (e.g., "cmd+shift+t"). */
+  keys: string;
+  /** Optional condition string. */
+  when?: string;
+}
+
+/** A permission entry: bare scope string or `{ scope, reason }` object. */
+export type ManifestPermission = PermissionScope | PermissionEntry;
+
+/**
  * Plugin manifest shape — corresponds to the `plugin.json` file
  * that every plugin must include.
  */
@@ -246,11 +354,17 @@ export interface PluginManifest {
   name: string;
   /** Semantic version string. */
   version: string;
-  /** Runtime engine; currently only "javascript" is supported. */
-  runtime: "javascript";
-  /** Path to the main entry file relative to the plugin root. */
-  entrypoint: string;
-  /** Minimum host version required (semver). */
+  /**
+   * Runtime engine. Third-party plugins use "javascript"; "core-swift" is
+   * reserved for host-bundled core plugins.
+   */
+  runtime: "javascript" | "core-swift";
+  /**
+   * Path to the main entry file relative to the plugin root.
+   * Required for "javascript" runtime; absent for "core-swift" plugins.
+   */
+  entrypoint?: string;
+  /** Minimum host version required (semver). Host launch baseline is 1.0.0. */
   minHostVersion?: string;
   /** Plugin author name or organization. */
   author?: string;
@@ -258,12 +372,46 @@ export interface PluginManifest {
   description?: string;
   /** SPDX license identifier. */
   license?: string;
+  /** Repository URL. */
+  repository?: string;
   /** Activation events that trigger plugin loading. */
   activation?: { events: ActivationEvent[] };
-  /** Permission scopes requested by the plugin. */
-  permissions?: PermissionScope[];
+  /**
+   * Permission scopes requested by the plugin. Each entry is either a bare
+   * scope string or a `{ scope, reason }` object (reason ≤ 120 chars, shown
+   * in the approval sheet).
+   */
+  permissions?: ManifestPermission[];
+  /** Dynamic capabilities dictionary. */
+  capabilities?: Record<string, AnyJSONValue>;
+  /** Extension points declared by this plugin. */
+  extensionPoints?: AnyJSONValue[];
+  /** Data contracts declared by this plugin. */
+  dataContracts?: AnyJSONValue[];
+  /**
+   * Extension contributions (fn-12 typed array) — the manifest-declarative
+   * tier for core-plugin extension points. See {@link PluginExtensionContribution}.
+   */
+  extensions?: PluginExtensionContribution[];
+  /** Manifest-declared keyboard shortcuts, auto-registered at activation. */
+  shortcuts?: ManifestShortcut[];
+  /**
+   * Plugin scope: "window" (per-window instance) or "app" (single shared
+   * instance, default). Core-swift plugins always behave as "app".
+   */
+  scope?: "window" | "app";
+  /**
+   * Isolation mechanism: "jscontext" (in-process, default) or "xpc"
+   * (reserved for future sandboxed XPC isolation; parsed but not enforced).
+   */
+  isolation?: "jscontext" | "xpc";
   /** Shell commands the plugin is allowed to execute. */
   shellCommands?: string[];
+  /**
+   * Allowed shell commands for core-plugin `shellExecute` enforcement
+   * (core-swift only). Absent/empty = deny-all.
+   */
+  allowedShellCommands?: string[];
   /** Regex patterns for denied shell commands (fn-46). Evaluated before allowlist. */
   shellDeniedPatterns?: string[];
   /** Network domains the plugin is allowed to access. */
