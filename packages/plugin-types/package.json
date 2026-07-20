@@ -1,6 +1,6 @@
 {
   "name": "@appos.space/plugin-types",
-  "version": "2.4.0",
+  "version": "3.0.0",
   "description": "TypeScript type definitions for the AppOS Plugin API",
   "main": "dist/index.d.ts",
   "types": "dist/index.d.ts",

@@ -7,7 +7,7 @@ ergonomic, zero runtime overhead where it matters.
 
 | Package | Purpose | Runtime |
 |---------|---------|---------|
-| [`@appos.space/plugin-types`](./packages/plugin-types) | TypeScript definitions for the full Plugin API (22 namespaces, 33 permissions). | declaration-only |
+| [`@appos.space/plugin-types`](./packages/plugin-types) | TypeScript definitions for the full Plugin API (43 namespaces, 135 canonical permission scopes). | declaration-only |
 | [`@appos.space/view-builders`](./packages/view-builders) | Typed builders for `ViewDescriptor` — `vstack()`, `section()`, `listItem()`, etc. | plain object literals (tree-shakeable) |
 | [`@appos.space/plugin-utils`](./packages/plugin-utils) | Pure utility functions — path conversion, formatting, action routing, debounce. | pure functions |
 
@@ -67,8 +67,9 @@ declarations (and JS, where applicable) ship to consumers.
 
 ## Versioning
 
-Package versions track the plugin API version. `2.4.x` of any package
-corresponds to plugin API `2.4.x`.
+Package versions track the plugin API version. `3.0.x` of `plugin-types`
+corresponds to the AppOS 1.0.0 host surface (waves fn-70 .. fn-101 + fn-118).
+Earlier `2.4.x` releases cover only the pre-fn-70 legacy tier (22 namespaces).
 
 ## License
 
