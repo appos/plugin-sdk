@@ -1,0 +1,13 @@
+# build output
+dist/
+# generated types
+.astro/
+# dependencies
+node_modules/
+# TypeDoc output — regenerated on every build by starlight-typedoc
+src/content/docs/api/
+# environment variables
+.env
+.env.production
+# macOS
+.DS_Store

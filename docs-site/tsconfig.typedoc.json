@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@appos.space/plugin-types": ["../packages/plugin-types/src/index.ts"]
+    }
+  },
+  "include": [
+    "../packages/plugin-types/src/**/*.ts",
+    "../packages/view-builders/src/**/*.ts",
+    "../packages/plugin-utils/src/**/*.ts"
+  ],
+  "exclude": [
+    "../packages/plugin-types/src/__tests__",
+    "../packages/view-builders/src/__tests__",
+    "../packages/plugin-utils/src/__tests__"
+  ]
+}
