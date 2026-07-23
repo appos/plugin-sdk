@@ -18,6 +18,13 @@ npm install --save-dev @appos.space/plugin-types
 npm install @appos.space/view-builders @appos.space/plugin-utils
 ```
 
+> **Runtime support:** the runtime packages (`view-builders`, `plugin-utils`)
+> ship ESM only. The standard plugin pipeline (esbuild IIFE bundle) and `tsx`
+> consume them on any Node line. Plain CommonJS `require()` relies on native
+> `require(esm)`, so it needs Node `^20.19.0 || ^22.12.0 || >=23` — declared in
+> each package's `engines` field. Node 18 (EOL since April 2025) cannot
+> `require()` them.
+
 Minimal example:
 
 ```ts
