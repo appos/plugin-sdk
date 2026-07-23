@@ -19,7 +19,7 @@ npm run build
 npm test
 
 echo "==> Bumping all packages to $VERSION..."
-npm version "$VERSION" --workspaces --include-workspace-root --no-git-tag-version
+npm version "$VERSION" --workspaces --include-workspace-root --no-git-tag-version --allow-same-version
 
 echo "==> Committing version bump..."
 git add packages/*/package.json package.json package-lock.json
