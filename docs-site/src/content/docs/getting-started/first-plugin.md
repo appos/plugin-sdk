@@ -93,8 +93,11 @@ export function deactivate() {
 ## 3. Build and validate
 
 ```bash
-esbuild src/main.ts --bundle --format=iife --target=es2020 --outfile=dist/main.js
+npx esbuild src/main.ts --bundle --format=iife --target=es2020 --outfile=dist/main.js
 ```
+
+`npx` runs the esbuild binary you installed as a devDependency during
+[installation](/getting-started/installation/) — no global install needed.
 
 Validate your manifest against the schema shipped in this repo:
 

@@ -53,12 +53,18 @@ npm run dev        # generate data pages + local dev server (localhost:4321)
   `packages/plugin-types/src/`) or the generator script, then run
   `npm run generate` and commit the result.
 
+## Deployment
+
+- The site deploys to **Cloudflare Pages** (project `appos-docs`, live at
+  <https://docs.appos.space>) via the `deploy` job in
+  `.github/workflows/docs.yml`, which runs on every push to `main` after
+  the build job succeeds. The required repo secrets
+  (`CLOUDFLARE_API_TOKEN` with "Cloudflare Pages: Edit" +
+  `CLOUDFLARE_ACCOUNT_ID`) are configured on the repository.
+
 ## Known stubs / TODOs
 
 - **Extension-point payload schemas** and the **host event-topic catalog**
   are owned by the AppOS host repo and are not machine-readable from this
   repo yet. The corresponding pages carry explicit TODO callouts and will
   grow generated tables once the host exports those catalogs.
-- **Cloudflare Pages deploy** in `.github/workflows/docs.yml` is stubbed
-  (commented) until `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` repo
-  secrets are configured.
