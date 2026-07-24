@@ -52,6 +52,7 @@ contribution surfaces exist, grouped here by family:
 | `store` | `store.backend.register`, `store.migrator.register`, `store.indexer.register` |
 | `vault` | `vault.type.register`, `vault.bridge.register`, `vault.rotator.register`, `vault.policy.contribute` |
 | `actions` | `actions.register` |
+| `palette` | `palette.contribute.scope` |
 | `scheduler` | `scheduler.trigger.register`, `scheduler.condition.register`, `scheduler.action.register` |
 | `resources` | `resources.provider.register` |
 | `tokens` | `tokens.provider.register` |
@@ -61,7 +62,7 @@ contribution surfaces exist, grouped here by family:
 | `sidecars` | `sidecars.definition.register` |
 | `notifications` | `notifications.channel.register`, `notifications.filter.register`, `notifications.action.register` |
 | `input` | `input.channel.register`, `input.parser.register`, `input.intent.register`, `input.auth.register` |
-| `webhook` | `webhook.route.register`, `webhook.tunnel.register`, `webhook.signer.register` |
+| `webhook` | `webhook.route.register`, `webhook.route.register.unsigned`, `webhook.tunnel.register`, `webhook.signer.register` |
 | `llm` | `llm.provider.register`, `llm.preprocessor.register`, `llm.postprocessor.register`, `llm.router.register` |
 | `recipes` | `recipes.register` |
 | `sequences` | `sequences.register` |

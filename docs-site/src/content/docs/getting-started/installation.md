@@ -32,8 +32,12 @@ runtime. The host expects:
 - **Format**: IIFE bundle targeting ES2020 (`esbuild --format=iife --target=es2020`)
 - **Entrypoint**: `dist/main.js` (declared as `entrypoint` in `plugin.json`)
 - **No external runtime dependencies** — everything must be bundled
-- **Exports**: your bundle must define `globalThis.activate` (and optionally
-  `globalThis.deactivate`)
+- **Exports**: your bundle must define both `globalThis.activate` and
+  `globalThis.deactivate` — a no-op `deactivate` is fine if you have nothing to
+  clean up. (The host currently tolerates a missing `deactivate` at runtime, but
+  the published contract in `schemas/constraints.json` lists both under
+  `requiredExports`, and validation tooling built on it will flag a bundle that
+  omits one — see [Limits & constraints](/manifest/limits/).)
 
 A minimal build script:
 

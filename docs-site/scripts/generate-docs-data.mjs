@@ -443,8 +443,11 @@ function pageExtensionPoints() {
   // Derive contribution surfaces from contributor-shaped permission scopes —
   // the only machine-readable signal for extension points in this repo.
   const fixedScopes = constraints.permissions?.fixedScopes ?? [];
+  // Match the contributor verb as a whole segment — final (`actions.register`)
+  // or nested (`palette.contribute.scope`, `surfaces.contribute.sidebar.top`,
+  // `webhook.route.register.unsigned`).
   const contributorScopes = fixedScopes.filter((s) =>
-    /(\.register|\.provide|\.contribute)$/.test(s) || s.startsWith("surfaces.contribute."),
+    /\.(register|provide|contribute)(\.|$)/.test(s),
   );
   const byFamily = new Map();
   for (const scope of contributorScopes) {

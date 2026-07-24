@@ -21,7 +21,7 @@ manifest and a compiled JS bundle.
   "activation": { "events": ["onStartup"] },
   "permissions": [
     { "scope": "ui.sidebar", "reason": "Show the file list panel" },
-    { "scope": "filesystem.read", "reason": "List the home directory" }
+    { "scope": "filesystem.read", "reason": "List the current folder" }
   ]
 }
 ```
@@ -39,23 +39,45 @@ The host calls `globalThis.activate(context)` when the plugin activates. The
 namespace.
 
 ```ts title="src/main.ts"
-import type { PluginContext } from "@appos.space/plugin-types";
+import type { PluginContext, PluginFileDescriptor } from "@appos.space/plugin-types";
 import { vstack, section, listItem, button } from "@appos.space/view-builders";
 import { formatSize } from "@appos.space/plugin-utils";
 
-export async function activate(ctx: PluginContext) {
-  const files = await ctx.fs.readDir(await ctx.fs.home());
+const PANEL_ID = "hello-panel";
 
-  ctx.ui.render(
-    vstack([
-      section("Home", { icon: "house" },
-        files.map((f) =>
-          listItem(f.name, { badge: formatSize(f.size), action: `open:${f.name}` }),
-        ),
+function fileListView(files: PluginFileDescriptor[]) {
+  return vstack([
+    section("Current Folder", { icon: "folder" },
+      files.map((f) =>
+        listItem(f.name, {
+          icon: f.isDirectory ? "folder" : "doc",
+          trailing: f.size !== null ? formatSize(f.size) : undefined,
+        }),
       ),
-      button("Refresh", { action: "refresh", style: "primary" }),
-    ]),
-  );
+    ),
+    button("Refresh", { action: "refresh" }),
+  ]);
+}
+
+async function listActiveDirectory(ctx: PluginContext) {
+  const dir = await ctx.fileOps.getActiveDirectory();
+  return ctx.fileOps.listDirectory(dir);
+}
+
+export async function activate(ctx: PluginContext) {
+  ctx.ui.registerPanel(PANEL_ID, {
+    title: "Hello AppOS",
+    icon: "folder",
+    target: "sidebar",
+    view: fileListView(await listActiveDirectory(ctx)),
+    handler: async (action) => {
+      if (action === "refresh") {
+        ctx.ui.updatePanel(PANEL_ID, {
+          view: fileListView(await listActiveDirectory(ctx)),
+        });
+      }
+    },
+  });
 }
 
 export function deactivate() {

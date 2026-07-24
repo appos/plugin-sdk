@@ -40,7 +40,7 @@ const view = vstack([
   section("Files", { icon: "doc.on.doc", badge: "3" }, [
     listItem("readme.md", { icon: "doc", action: "open:readme" }),
   ]),
-  button("Add", { action: "add-file", style: "primary" }),
+  button("Add", { action: "add-file", tooltip: "Create a new file" }),
 ]);
 ```
 
@@ -56,15 +56,17 @@ const view = vstack([
 Pure utility functions — host-agnostic, side-effect free, tree-shakeable.
 
 ```ts
-import { formatSize, urlToPath, createActionRouter, debounce } from "@appos.space/plugin-utils";
+import { formatSize, urlToPath, pathToUrl, createActionRouter } from "@appos.space/plugin-utils";
 
 urlToPath("file:///Users/foo/my%20file.txt"); // "/Users/foo/my file.txt"
 formatSize(1_536);                            // "1.5 KB"
 
+// Handlers are keyed by action prefix — the returned function splits each
+// dispatched action on the first ":" and passes the remainder to the handler.
 const router = createActionRouter({
-  "open:readme": () => ctx.ui.openFile("readme.md"),
+  open: (path) => { ctx.ui.openEditor(pathToUrl(path)); },
 });
-router.dispatch("open:readme");
+router("open:/docs/readme.md"); // calls the "open" handler with "/docs/readme.md"
 ```
 
 | Module | Exports |
