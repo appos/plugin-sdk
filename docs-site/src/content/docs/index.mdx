@@ -1,0 +1,43 @@
+---
+title: AppOS Plugin SDK
+description: Build type-safe plugins for AppOS — the composable macOS desktop automation platform.
+template: splash
+hero:
+  tagline: Type-safe, ergonomic packages for building AppOS plugins. Zero runtime overhead where it matters.
+  actions:
+    - text: Get started
+      link: /getting-started/installation/
+      icon: right-arrow
+    - text: API Reference
+      link: /reference/namespaces/
+      variant: minimal
+    - text: GitHub
+      link: https://github.com/appos/plugin-sdk
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+  <Card title="Typed Plugin API" icon="seti:typescript">
+    [`@appos.space/plugin-types`](/getting-started/packages/) covers the full
+    plugin surface — 43 API namespaces from `context.ui` to `context.llm`,
+    plus the manifest schema and all 135 canonical permission scopes.
+  </Card>
+  <Card title="Declarative UI builders" icon="puzzle">
+    [`@appos.space/view-builders`](/getting-started/packages/) gives you
+    `vstack()`, `section()`, `listItem()` and friends — typed helpers that
+    compile down to plain object literals.
+  </Card>
+  <Card title="Pure utilities" icon="setting">
+    [`@appos.space/plugin-utils`](/getting-started/packages/) — path
+    conversion, formatting, ID generation, action routing, debounce/throttle.
+    All pure, all tree-shakeable.
+  </Card>
+  <Card title="Manifest &amp; permissions" icon="approve-check">
+    A JSON Schema for `plugin.json` with editor autocomplete, plus a
+    [generated catalog](/manifest/permission-scopes/) of every permission
+    scope the host recognizes.
+  </Card>
+</CardGrid>

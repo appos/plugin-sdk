@@ -1,0 +1,3 @@
+# SHA-256 over generator inputs (schemas/ + plugin-types sources).
+# Regenerate: cd docs-site && npm run generate
+42580dbca0f7e6bab74c7e9cadde427e71b467736239354769b90cedc20bfa07

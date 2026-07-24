@@ -1,0 +1,25 @@
+{
+  "name": "@appos.space/docs-site",
+  "private": true,
+  "type": "module",
+  "description": "Developer documentation site for the AppOS Plugin SDK (Astro Starlight + TypeDoc)",
+  "scripts": {
+    "dev": "npm run generate && astro dev",
+    "generate": "node scripts/generate-docs-data.mjs",
+    "check-drift": "node scripts/generate-docs-data.mjs --check",
+    "build": "npm run generate && astro build && node scripts/generate-llms-txt.mjs",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.35.0",
+    "astro": "^5.6.0",
+    "sharp": "^0.34.0",
+    "starlight-typedoc": "^0.21.0",
+    "typedoc": "^0.28.0",
+    "typedoc-plugin-markdown": "^4.6.0",
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
