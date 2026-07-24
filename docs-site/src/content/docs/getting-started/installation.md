@@ -16,13 +16,14 @@ The SDK is published as three npm packages:
 ## Install
 
 ```bash
-npm install --save-dev @appos.space/plugin-types
+npm install --save-dev @appos.space/plugin-types esbuild
 npm install @appos.space/view-builders @appos.space/plugin-utils
 ```
 
-`plugin-types` is declaration-only (zero runtime, zero bundle impact), so it
-belongs in `devDependencies`. The other two ship tiny pure functions that
-esbuild tree-shakes into your bundle.
+`plugin-types` is declaration-only (zero runtime, zero bundle impact) and
+esbuild is only needed at build time, so both belong in `devDependencies`. The
+other two packages ship tiny pure functions that esbuild tree-shakes into your
+bundle.
 
 ## Build constraints
 
@@ -42,21 +43,23 @@ runtime. The host expects:
 A minimal build script:
 
 ```bash
-esbuild src/main.ts --bundle --format=iife --target=es2020 --outfile=dist/main.js
+npx esbuild src/main.ts --bundle --format=iife --target=es2020 --outfile=dist/main.js
 ```
+
+`npx` runs the esbuild binary installed above. Inside a `package.json`
+`"scripts"` entry (e.g. `"build": "esbuild src/main.ts ..."`), the prefix is
+unnecessary — npm puts `node_modules/.bin` on the PATH for you.
 
 ## TypeScript setup
 
-Reference the types globally:
-
-```ts
-/// <reference types="@appos.space/plugin-types" />
-```
-
-Or import what you need:
+Import the types you need:
 
 ```ts
 import type { PluginContext, ViewDescriptor } from "@appos.space/plugin-types";
 ```
+
+The package exposes module exports only — it ships no ambient (global)
+declarations, so types are always imported by name. `import type` is erased at
+compile time, so this adds nothing to your bundle.
 
 Next: [write your first plugin](/getting-started/first-plugin/).

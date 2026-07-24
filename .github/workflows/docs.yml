@@ -58,34 +58,27 @@ jobs:
           retention-days: 14
 
   # ---------------------------------------------------------------------
-  # Deploy to Cloudflare Pages (docs.appos.space) — STUBBED.
-  #
-  # To enable:
-  #   1. Create a Cloudflare Pages project (e.g. `appos-docs`) and attach
-  #      the custom domain docs.appos.space.
-  #   2. Add repo secrets (Settings → Secrets and variables → Actions):
-  #        CLOUDFLARE_API_TOKEN   — API token with "Cloudflare Pages: Edit"
-  #        CLOUDFLARE_ACCOUNT_ID  — the target account id
-  #      (Do NOT commit credentials to the repo.)
-  #   3. Uncomment the job below.
+  # Deploy to Cloudflare Pages (docs.appos.space).
+  # Pages project: appos-docs. Requires repo secrets CLOUDFLARE_API_TOKEN
+  # (with "Cloudflare Pages: Edit") + CLOUDFLARE_ACCOUNT_ID.
   # ---------------------------------------------------------------------
-  # deploy:
-  #   name: Deploy to Cloudflare Pages
-  #   needs: build
-  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     deployments: write
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/download-artifact@v4
-  #       with:
-  #         name: docs-site-dist
-  #         path: docs-site/dist
-  #     - name: Deploy
-  #       uses: cloudflare/wrangler-action@v3
-  #       with:
-  #         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-  #         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-  #         command: pages deploy docs-site/dist --project-name=appos-docs
+  deploy:
+    name: Deploy to Cloudflare Pages
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: docs-site-dist
+          path: docs-site/dist
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy docs-site/dist --project-name=appos-docs

@@ -84,9 +84,10 @@ export function deactivate() {
   // optional cleanup — registrations are auto-cancelled on teardown
 }
 
-// The host looks for globals in an IIFE bundle:
-globalThis.activate = activate;
-globalThis.deactivate = deactivate;
+// The host looks for globals in an IIFE bundle. The cast is needed because
+// `typeof globalThis` has no `activate`/`deactivate` properties under strict TS:
+(globalThis as any).activate = activate;
+(globalThis as any).deactivate = deactivate;
 ```
 
 ## 3. Build and validate

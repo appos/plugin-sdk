@@ -8,7 +8,12 @@
  * vendored fixtures for CI/contributor environments.
  *
  * Usage:
+ *   node scripts/validate-schema.mjs <manifest.json> [more.json ...]
  *   node scripts/validate-schema.mjs [--plugins-dir <path>] [--ytdlp-dir <path>]
+ *
+ * With positional manifest paths, validates exactly those files and exits
+ * non-zero if any fail. With no positional args, runs the repo suite:
+ * community plugins (when present) + vendored fixtures.
  */
 
 import Ajv2020 from "ajv/dist/2020.js";
@@ -23,12 +28,20 @@ const ROOT = resolve(__dirname, "..");
 // ── CLI args ────────────────────────────────────────────────────────────────
 
 function parseArgs(args) {
-  const opts = {};
+  const opts = { manifests: [] };
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--plugins-dir" && args[i + 1]) {
       opts.pluginsDir = resolve(args[++i]);
     } else if (args[i] === "--ytdlp-dir" && args[i + 1]) {
       opts.ytdlpDir = resolve(args[++i]);
+    } else if (args[i].startsWith("--")) {
+      console.error(`Unknown option: ${args[i]}`);
+      console.error(
+        "Usage: node scripts/validate-schema.mjs <manifest.json> [more.json ...] | [--plugins-dir <path>] [--ytdlp-dir <path>]"
+      );
+      process.exit(2);
+    } else {
+      opts.manifests.push(args[i]);
     }
   }
   return opts;
@@ -106,6 +119,38 @@ function checkExpectedInvalid(label, filePath, expectedKeyword) {
     );
     failed++;
   }
+}
+
+// ── Direct manifest validation (positional args) ────────────────────────────
+//
+// `node scripts/validate-schema.mjs path/to/plugin.json` — the invocation the
+// docs quick-start recommends. Validates exactly the given manifests.
+
+if (cliOpts.manifests.length > 0) {
+  console.log("\n\u250C\u2500 Plugin Schema Validation");
+  console.log("\u2502");
+
+  for (const manifestPath of cliOpts.manifests) {
+    if (!existsSync(manifestPath)) {
+      console.log(
+        `  ${RED}\u2717${RESET} ${manifestPath} ${DIM}(file not found)${RESET}`
+      );
+      failed++;
+      continue;
+    }
+    try {
+      check(manifestPath, manifestPath);
+    } catch (err) {
+      console.log(
+        `  ${RED}\u2717${RESET} ${manifestPath} ${DIM}(${err.message})${RESET}`
+      );
+      failed++;
+    }
+  }
+
+  console.log("\u2502");
+  console.log(`\u2514\u2500 ${passed} passed, ${failed} failed\n`);
+  process.exit(failed > 0 ? 1 : 0);
 }
 
 // ── Community plugins ───────────────────────────────────────────────────────
