@@ -74,9 +74,11 @@ Rules:
   `appos/runtime/plugin.json` and copies it to the bundle root at install time
   ("normalize-at-install"); neither present fails the install with
   `manifestMissing`. There is no globbing — the fallback is one constant path.
-- **Verification precedes manifest resolution.** SHA-256 (and, on the catalog
-  install path, Ed25519 signature verification) runs over the exact zip bytes
-  before extraction — always before any manifest is read.
+- **Verification precedes manifest resolution.** SHA-256 (both install paths)
+  and, on the catalog install path, the publisher-verified gate plus Ed25519
+  signature verification all run before extraction — the hash and signature
+  checks cover the exact zip bytes, so no manifest is read until verification
+  passes.
 - **Exactly one catalog-manifest candidate.** Nothing named `plugin.json` or
   `manifest.json` may exist at the zip root or one level deep except the single
   catalog manifest — the submit scan rejects zero candidates (`no_manifest`)
