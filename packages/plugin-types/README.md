@@ -41,7 +41,7 @@ export async function activate(ctx: PluginContext) {
 
 ## Version
 
-Tracks the plugin API version. `2.4.x` of this package ↔ plugin API `2.4.x`.
+Tracks the plugin API version — the package's `major.minor` matches the plugin API's `major.minor` (e.g. `3.0.x` of this package ↔ plugin API `3.0.x`).
 
 ## Related packages
 
