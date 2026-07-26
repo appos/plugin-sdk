@@ -196,6 +196,30 @@ export interface ActionReceipt {
 }
 
 /**
+ * Source that initiated an action invocation (fn-89). Mirrors the host's
+ * canonical `InvocationSource` union.
+ */
+export type InvocationSource = "user" | "plugin" | "agent" | "recipe" | "sequence" | "system";
+
+/**
+ * Execution context passed as the SINGLE argument to an action handler
+ * registered via `actions.register(...)` (fn-89). Mirrors exactly the
+ * object the host constructs per invocation: the validated `input` plus
+ * invocation metadata. Deliberately has NO index signature — the host
+ * passes only these fields, so unknown-property access is a type error.
+ */
+export interface ActionExecutionContext {
+  /** Unique id (UUID string) for this invocation. */
+  invocationId: string;
+  /** What initiated the invocation. */
+  source: InvocationSource;
+  /** Validated action input (`{}` when the action was invoked with empty input). */
+  input: AnyJSONValue;
+  /** Originating identity when known (e.g. calling plugin id); key absent otherwise. */
+  sourceId?: string;
+}
+
+/**
  * Public Action Fabric (fn-89): validate → permission → approve → execute →
  * receipt.
  *
@@ -206,8 +230,15 @@ export interface ActionReceipt {
  * @since fn-89
  */
 export interface ActionsAPI {
-  /** Registers an executable action. Returns a handle token. [actions.register] */
-  register(def: ActionDefinition, handler: (input: AnyJSONValue) => AnyJSONValue | Promise<AnyJSONValue>): Promise<string>;
+  /**
+   * Registers an executable action. Returns a handle token. [actions.register]
+   *
+   * The handler is invoked with a single {@link ActionExecutionContext}
+   * argument carrying the validated `input` plus invocation metadata
+   * (`invocationId`, `source`, optional `sourceId`) — NOT the raw input
+   * value. Read the action input via `exec.input`.
+   */
+  register(def: ActionDefinition, handler: (exec: ActionExecutionContext) => AnyJSONValue | Promise<AnyJSONValue>): Promise<string>;
   /** Projects an existing command into the action catalog. [actions.register] */
   registerFromCommand(commandId: string, metadata: Partial<ActionDefinition>): Promise<string>;
   /**

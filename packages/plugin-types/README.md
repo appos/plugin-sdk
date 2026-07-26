@@ -14,13 +14,8 @@ npm install --save-dev @appos.space/plugin-types
 
 ## Usage
 
-Either reference the types globally:
-
-```ts
-/// <reference types="@appos.space/plugin-types" />
-```
-
-Or import specific types:
+Import the types you need (the package ships module exports only — no
+ambient globals):
 
 ```ts
 import type {
