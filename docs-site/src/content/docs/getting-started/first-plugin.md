@@ -110,3 +110,5 @@ node scripts/validate-schema.mjs path/to/plugin.json
 - [API namespaces](/reference/namespaces/) — the full `context.*` surface
 - [Manifest & permissions](/manifest/) — every manifest field and scope
 - [Extension points](/extension-points/) — contributing to core plugins via `extensions[]`
+- [Catalog bundle layout](/manifest/#catalog-bundle-layout) — how a published
+  catalog bundle's zip layout differs from this dev layout

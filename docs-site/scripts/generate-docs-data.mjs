@@ -279,6 +279,14 @@ Generated from
 
 **Always required:** ${requiredList.map((f) => `\`${f}\``).join(", ")}. ${conditional}
 
+:::note
+In a dev tree this file is \`plugin.json\` at the plugin root. In a *published
+catalog bundle* it rides at \`appos/runtime/plugin.json\` (the zip root holds the
+catalog \`manifest.json\` instead) and the desktop installer copies it back to
+the bundle root at install time — see
+[Catalog bundle layout](/manifest/#catalog-bundle-layout).
+:::
+
 ## Fields
 
 ${renderSchemaObject(manifestSchema, requiredList, 2, "")}

@@ -17,6 +17,14 @@ Generated from
 
 **Always required:** `id`, `name`, `version`, `runtime`. Plugins with `"runtime": "javascript"` must also declare `entrypoint`.
 
+:::note
+In a dev tree this file is `plugin.json` at the plugin root. In a *published
+catalog bundle* it rides at `appos/runtime/plugin.json` (the zip root holds the
+catalog `manifest.json` instead) and the desktop installer copies it back to
+the bundle root at install time — see
+[Catalog bundle layout](/manifest/#catalog-bundle-layout).
+:::
+
 ## Fields
 
 | Field | Type | Required | Description |
