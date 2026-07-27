@@ -93,8 +93,19 @@ Rules:
 
 ## Validation
 
-This repo ships a validator you can run locally against any manifest:
+This repo ships a validator for the **runtime `plugin.json` manifest only** —
+it checks against `schemas/plugin-v1.json`, the schema documented on these
+pages:
 
 ```bash
 node scripts/validate-schema.mjs path/to/plugin.json
 ```
+
+The catalog `manifest.json` at the zip root uses a different schema — catalog
+`manifest-v1` — and has **no local validator in this repo**, so don't point
+`validate-schema.mjs` at it: you'd get irrelevant runtime-schema errors.
+Catalog manifests are validated server-side at publish time — the submit step
+re-extracts `manifest.json` from your uploaded zip and validates it strictly
+(unknown keys rejected; `schema`, `slug`, `title`, and `entry` required).
+Failures surface as `manifest_invalid` errors in the publish API's
+`prepare → submit` response.

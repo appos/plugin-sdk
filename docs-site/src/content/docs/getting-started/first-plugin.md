@@ -99,7 +99,9 @@ npx esbuild src/main.ts --bundle --format=iife --target=es2020 --outfile=dist/ma
 `npx` runs the esbuild binary you installed as a devDependency during
 [installation](/getting-started/installation/) — no global install needed.
 
-Validate your manifest against the schema shipped in this repo:
+Validate your runtime `plugin.json` against the schema shipped in this repo
+(runtime schema only — the catalog `manifest.json` of a published bundle is
+validated server-side at submit time):
 
 ```bash
 node scripts/validate-schema.mjs path/to/plugin.json
