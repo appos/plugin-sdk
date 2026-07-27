@@ -5,9 +5,13 @@ sidebar:
   order: 1
 ---
 
-Every AppOS plugin ships a `plugin.json` manifest at its root. The manifest
-declares the plugin's identity, when it activates, which permissions it needs,
-and any system or plugin dependencies.
+Every AppOS plugin keeps its `plugin.json` manifest at the plugin root — in
+the dev tree and in the installed plugin directory alike. The one exception is
+a catalog-published zip, which nests the runtime manifest at
+`appos/runtime/plugin.json` until the installer copies it to the root at
+install time — see [Catalog bundle layout](#catalog-bundle-layout) below. The
+manifest declares the plugin's identity, when it activates, which permissions
+it needs, and any system or plugin dependencies.
 
 The manifest is validated against the JSON Schema at
 [`schemas/plugin-v1.json`](https://github.com/appos/plugin-sdk/blob/main/schemas/plugin-v1.json).
