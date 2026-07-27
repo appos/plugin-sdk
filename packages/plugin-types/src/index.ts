@@ -3,9 +3,7 @@
  *
  * Version: 3.0.0
  *
- * Usage:
- *   /// <reference types="@appos.space/plugin-types" />
- *   // or
+ * Usage (module imports only — the package ships no ambient globals):
  *   import type { PluginContext, ViewDescriptor } from "@appos.space/plugin-types";
  */
 
