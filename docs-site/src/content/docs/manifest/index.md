@@ -5,9 +5,13 @@ sidebar:
   order: 1
 ---
 
-Every AppOS plugin ships a `plugin.json` manifest at its root. The manifest
-declares the plugin's identity, when it activates, which permissions it needs,
-and any system or plugin dependencies.
+Every AppOS plugin keeps its `plugin.json` manifest at the plugin root — in
+the dev tree and in the installed plugin directory alike. The one exception is
+a catalog-published zip, which nests the runtime manifest at
+`appos/runtime/plugin.json` until the installer copies it to the root at
+install time — see [Catalog bundle layout](#catalog-bundle-layout) below. The
+manifest declares the plugin's identity, when it activates, which permissions
+it needs, and any system or plugin dependencies.
 
 The manifest is validated against the JSON Schema at
 [`schemas/plugin-v1.json`](https://github.com/appos/plugin-sdk/blob/main/schemas/plugin-v1.json).
@@ -42,10 +46,70 @@ Add a `$schema` reference for editor autocomplete:
 - **[Extension points](/extension-points/)** — the `extensions[]` array for
   contributing to core-plugin extension points.
 
+## Catalog bundle layout
+
+A dev tree keeps `plugin.json` at the plugin root — that is what local and
+sideload installs load. Bundles published to the AppOS catalog use **AppOS
+Catalog Bundle Layout v1**, which carries TWO manifests because the catalog's
+submit validation and the desktop installer read different schemas:
+
+- `manifest.json` at the **zip root** — the catalog `manifest-v1` document
+  (`schema`, `slug`, `kind`, `version`, `title`, `license`, `capabilities`,
+  `permissions`, `compatibility`, `entry`; unknown keys rejected). Validated at
+  publish time.
+- `appos/runtime/plugin.json` — the AppOS runtime manifest (the schema
+  documented on these pages). Read by the desktop app at install time.
+
+```text
+space-appos-myplugin-1.0.0.zip
+├── manifest.json            # catalog manifest-v1
+├── appos/
+│   └── runtime/
+│       └── plugin.json      # AppOS runtime manifest (this schema)
+├── dist/
+│   └── main.js              # runtime payload at the zip root
+└── webview/  assets/  README.md  LICENSE  ...
+```
+
+Rules:
+
+- **Installer resolution is root-first.** A root `plugin.json` always wins;
+  otherwise the desktop installer consults the single well-known fallback
+  `appos/runtime/plugin.json` and copies it to the bundle root at install time
+  ("normalize-at-install"); neither present fails the install with
+  `manifestMissing`. There is no globbing — the fallback is one constant path.
+- **Verification precedes manifest resolution.** SHA-256 (both install paths)
+  and, on the catalog install path, the publisher-verified gate plus Ed25519
+  signature verification all run before extraction — the hash and signature
+  checks cover the exact zip bytes, so no manifest is read until verification
+  passes.
+- **Exactly one catalog-manifest candidate.** Nothing named `plugin.json` or
+  `manifest.json` may exist at the zip root or one level deep except the single
+  catalog manifest — the submit scan rejects zero candidates (`no_manifest`)
+  and more than one (`ambiguous_bundle_root`). Depth 2 keeps the runtime
+  manifest invisible to that scan.
+- **Runtime-manifest paths are relative to the ZIP ROOT**, not to
+  `appos/runtime/` — e.g. `"entrypoint": "dist/main.js"`.
+- A dev-layout bundle (root `plugin.json`, no `manifest.json`) installs locally
+  but is NOT publishable to the catalog: its root `plugin.json` would be
+  selected as the catalog-manifest candidate and fail `manifest-v1` validation
+  (`manifest_invalid`).
+
 ## Validation
 
-This repo ships a validator you can run locally against any manifest:
+This repo ships a validator for the **runtime `plugin.json` manifest only** —
+it checks against `schemas/plugin-v1.json`, the schema documented on these
+pages:
 
 ```bash
 node scripts/validate-schema.mjs path/to/plugin.json
 ```
+
+The catalog `manifest.json` at the zip root uses a different schema — catalog
+`manifest-v1` — and has **no local validator in this repo**, so don't point
+`validate-schema.mjs` at it: you'd get irrelevant runtime-schema errors.
+Catalog manifests are validated server-side at publish time — the submit step
+re-extracts `manifest.json` from your uploaded zip and validates it strictly
+(unknown keys rejected; `schema`, `slug`, `title`, and `entry` required).
+Failures surface as `manifest_invalid` errors in the publish API's
+`prepare → submit` response.
