@@ -36,7 +36,7 @@ export async function activate(ctx: PluginContext) {
 - **Core** — `PluginContext`, `PluginManifest`, activation lifecycle
 - **Views** — `ViewDescriptor` union for declarative UI
 - **Namespaces** — typed APIs for `fileOps`, `ui`, `shell`, `network`, `storage`, `actions`, and 37 more (the 22 host-core namespaces plus the 21 core-plugin namespaces)
-- **Permissions** — `PermissionScope`: the 135 canonical permission scopes (plus 5 deprecated legacy aliases) you can request in `plugin.json`
+- **Permissions** — `PermissionScope`: the 135 canonical permission scopes you can request in `plugin.json`, plus 5 deprecated legacy aliases kept in the type union for compile-time compatibility only — of those, only `network.fetch` is recognized by the host (normalized to `network.outbound`); `network`, `smartFolders`, and `webview` have no host-side entry, and `shell.uncontained` is never declarable (the uncontained shell tier is inferred from `filesystem.readAll`)
 - **Colors / Fonts / Icons** — design tokens matching the host app
 
 ## Version
