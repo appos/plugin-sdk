@@ -3,8 +3,8 @@
 TypeScript type definitions for the **AppOS Plugin API**.
 
 Declaration-only package — zero runtime, zero bundle impact. Gives you full
-autocomplete and type checking for all 22 plugin namespaces and 33 permissions
-when authoring plugins for AppOS.
+autocomplete and type checking for all 43 plugin namespaces and the full
+`PermissionScope` union when authoring plugins for AppOS.
 
 ## Install
 
@@ -22,12 +22,12 @@ import type {
   PluginContext,
   PluginManifest,
   ViewDescriptor,
-  Permission,
+  PermissionScope,
 } from "@appos.space/plugin-types";
 
 export async function activate(ctx: PluginContext) {
-  const home = await ctx.fs.home();
-  ctx.ui.notify({ title: "Hello", body: home });
+  const dir = await ctx.fileOps.getActiveDirectory();
+  ctx.ui.showNotification({ message: `Hello from ${dir}` });
 }
 ```
 
@@ -35,8 +35,8 @@ export async function activate(ctx: PluginContext) {
 
 - **Core** — `PluginContext`, `PluginManifest`, activation lifecycle
 - **Views** — `ViewDescriptor` union for declarative UI
-- **Namespaces** — typed APIs for `fs`, `ui`, `shell`, `http`, `kv`, `secrets`, and 16 more
-- **Permissions** — the 33 permission literals you can request in `plugin.json`
+- **Namespaces** — typed APIs for `fileOps`, `ui`, `shell`, `network`, `storage`, `actions`, and 37 more (the 22 host-core namespaces plus the 21 core-plugin namespaces)
+- **Permissions** — `PermissionScope`: the 135 canonical permission scopes you can request in `plugin.json`, plus the dynamic `` oauth.${string} `` family for provider-specific OAuth scopes (e.g. `oauth.github`), plus 5 deprecated legacy aliases kept in the type union for compile-time compatibility only — of those, only `network.fetch` is recognized by the host (normalized to `network.outbound`); `network`, `smartFolders`, and `webview` have no host-side entry, and `shell.uncontained` is never declarable (the uncontained shell tier is inferred from `filesystem.readAll`)
 - **Colors / Fonts / Icons** — design tokens matching the host app
 
 ## Version
