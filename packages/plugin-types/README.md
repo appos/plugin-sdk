@@ -3,8 +3,8 @@
 TypeScript type definitions for the **AppOS Plugin API**.
 
 Declaration-only package — zero runtime, zero bundle impact. Gives you full
-autocomplete and type checking for all 43 plugin namespaces and the 135-scope
-permission union when authoring plugins for AppOS.
+autocomplete and type checking for all 43 plugin namespaces and the full
+`PermissionScope` union when authoring plugins for AppOS.
 
 ## Install
 
@@ -36,7 +36,7 @@ export async function activate(ctx: PluginContext) {
 - **Core** — `PluginContext`, `PluginManifest`, activation lifecycle
 - **Views** — `ViewDescriptor` union for declarative UI
 - **Namespaces** — typed APIs for `fileOps`, `ui`, `shell`, `network`, `storage`, `actions`, and 37 more (the 22 host-core namespaces plus the 21 core-plugin namespaces)
-- **Permissions** — `PermissionScope`: the 135 canonical permission scopes you can request in `plugin.json`, plus 5 deprecated legacy aliases kept in the type union for compile-time compatibility only — of those, only `network.fetch` is recognized by the host (normalized to `network.outbound`); `network`, `smartFolders`, and `webview` have no host-side entry, and `shell.uncontained` is never declarable (the uncontained shell tier is inferred from `filesystem.readAll`)
+- **Permissions** — `PermissionScope`: the 135 canonical permission scopes you can request in `plugin.json`, plus the dynamic `` oauth.${string} `` family for provider-specific OAuth scopes (e.g. `oauth.github`), plus 5 deprecated legacy aliases kept in the type union for compile-time compatibility only — of those, only `network.fetch` is recognized by the host (normalized to `network.outbound`); `network`, `smartFolders`, and `webview` have no host-side entry, and `shell.uncontained` is never declarable (the uncontained shell tier is inferred from `filesystem.readAll`)
 - **Colors / Fonts / Icons** — design tokens matching the host app
 
 ## Version
