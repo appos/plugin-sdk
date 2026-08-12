@@ -7,6 +7,16 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts"
+    },
+    "./globals": {
+      "types": "./dist/globals.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "globals": [
+        "./dist/globals.d.ts"
+      ]
     }
   },
   "files": [
@@ -17,7 +27,7 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.json",
-    "test": "tsc --project tsconfig.test.json",
+    "test": "tsc --project tsconfig.test.json && node fixtures/globals/run.mjs",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

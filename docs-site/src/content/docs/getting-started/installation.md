@@ -58,8 +58,35 @@ Import the types you need:
 import type { PluginContext, ViewDescriptor } from "@appos.space/plugin-types";
 ```
 
-The package exposes module exports only — it ships no ambient (global)
-declarations, so types are always imported by name. `import type` is erased at
+The main entry exposes module exports only — importing it declares nothing
+global, so these types are always imported by name. `import type` is erased at
 compile time, so this adds nothing to your bundle.
+
+### Opt-in globals subpath
+
+There is ONE opt-in exception: `@appos.space/plugin-types/globals` declares
+the host-injected `URL` global (a Foundation-bridged constructor, targeted
+for host 1.1.0 — typed `URLConstructor | undefined` so you guard before
+use). It applies only to compilations that reference it. Opt in from your
+plugin entry file:
+
+```ts
+/// <reference types="@appos.space/plugin-types/globals" />
+
+if (typeof URL === "function" && URL.canParse(raw)) {
+  const host = new URL(raw).hostname;
+}
+```
+
+(or add `"types": ["@appos.space/plugin-types/globals"]` to your tsconfig's
+`compilerOptions`.)
+
+Only reference the subpath from plugin-runtime (JavaScriptCore) tsconfigs.
+Webview code compiled against `lib.dom` already has the browser's `URL`;
+the two declarations deliberately conflict, so a misconfigured tsconfig
+fails loudly at compile time instead of silently mixing two different URL
+contracts. The subpath's docblock documents the runtime's
+Foundation-vs-WHATWG divergences and the v1 subset (`url.searchParams` is
+absent and throws at runtime — parse `url.search` manually).
 
 Next: [write your first plugin](/getting-started/first-plugin/).

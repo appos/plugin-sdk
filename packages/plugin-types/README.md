@@ -14,8 +14,9 @@ npm install --save-dev @appos.space/plugin-types
 
 ## Usage
 
-Import the types you need (the package ships module exports only — no
-ambient globals):
+Import the types you need (the main entry ships module exports only; the
+ONE exception is the opt-in globals subpath — see
+[Host-injected globals](#host-injected-globals-opt-in) below):
 
 ```ts
 import type {
@@ -30,6 +31,51 @@ export async function activate(ctx: PluginContext) {
   ctx.ui.showNotification({ message: `Hello from ${dir}` });
 }
 ```
+
+## Host-injected globals (opt-in)
+
+AppOS hosts inject a **Foundation-bridged `URL` constructor** into the
+JavaScriptCore plugin runtime (targeted for host 1.1.0). The matching
+ambient declaration ships as a SEPARATE opt-in subpath,
+`@appos.space/plugin-types/globals`, so nothing global leaks into projects
+that don't reference it. Opt in from your plugin entry file:
+
+```ts
+/// <reference types="@appos.space/plugin-types/globals" />
+```
+
+or in `tsconfig.json`:
+
+```json
+{ "compilerOptions": { "types": ["@appos.space/plugin-types/globals"] } }
+```
+
+The global is typed `URLConstructor | undefined` — older hosts, menu-bar
+`JSContext` pools, and the `appos.jsc.urlGlobal.disabled` kill switch all
+leave it undefined. Guard before use, unless your manifest's
+`minHostVersion` pins a host release that injects it:
+
+```ts
+if (typeof URL === "function" && URL.canParse(raw)) {
+  const u = new URL(raw);
+  // u.hostname parses identically to the host's own security validators
+}
+```
+
+Notes:
+
+- **Foundation (RFC 3986) semantics, not a WHATWG polyfill.** The pinned
+  divergences are documented in the subpath's docblock: default ports
+  retained in `href`/`port`, empty path stays `""`, out-of-range ports
+  accepted, double-encode on href round-trip of pre-encoded query values,
+  `hostname` lowercased with IPv6 unbracketed (`host`/`origin` re-bracket).
+- **`url.searchParams` is NOT in the v1 subset** — the type omits it and
+  the runtime getter throws a `TypeError`; parse `url.search` manually.
+  `URL.parse` is likewise absent, and all accessors are readonly.
+- **Do NOT reference the subpath from webview code** compiled against
+  `lib.dom` — the browser already has `URL`, and the two declarations
+  deliberately conflict so a misconfigured tsconfig fails loudly instead of
+  silently mixing two URL contracts.
 
 ## What's included
 
