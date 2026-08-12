@@ -1,6 +1,6 @@
 {
   "name": "@appos.space/plugin-utils",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Common utility functions for AppOS plugins",
   "type": "module",
   "main": "dist/index.js",

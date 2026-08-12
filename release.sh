@@ -23,7 +23,13 @@ npm version "$VERSION" --workspaces --include-workspace-root --no-git-tag-versio
 
 echo "==> Committing version bump..."
 git add packages/*/package.json package.json package-lock.json
-git commit -m "chore: release v$VERSION"
+if git diff --cached --quiet; then
+  # A release-prep PR may have landed the lockstep bump already (e.g. v3.0.1);
+  # --allow-same-version above makes the bump a no-op, so skip the empty commit.
+  echo "==> Versions already at $VERSION (bump pre-staged); skipping bump commit."
+else
+  git commit -m "chore: release v$VERSION"
+fi
 
 echo "==> Tagging..."
 git tag "v$VERSION"
