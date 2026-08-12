@@ -18,6 +18,11 @@
   ],
   "exclude": [
     "../packages/plugin-types/src/__tests__",
+    // The opt-in globals subpath is deliberately OUTSIDE the API-reference
+    // entry point (index.ts), and its `declare global { var URL ... }`
+    // collides with lib.dom's URL — which this program pulls in via the
+    // default full lib because plugin-utils needs `globalThis.crypto`.
+    "../packages/plugin-types/src/globals.ts",
     "../packages/view-builders/src/__tests__",
     "../packages/plugin-utils/src/__tests__"
   ]
