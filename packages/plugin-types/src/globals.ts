@@ -148,10 +148,11 @@ declare global {
    * - Users can disable the injection with the host kill switch
    *   (`appos.jsc.urlGlobal.disabled`).
    *
-   * Guard before use — `if (typeof URL === "function") { ... }` — unless
-   * your manifest sets `minHostVersion` to a host release that injects the
-   * global, in which case main-plugin-context code may rely on it
-   * unconditionally (menu-bar contexts still must not).
+   * ALWAYS guard before use — `if (typeof URL === "function") { ... }`.
+   * Setting `minHostVersion` to an injecting host release removes only the
+   * older-host reason for absence; it does NOT override the user kill
+   * switch or the menu-bar context limitation, so unguarded use (e.g. a
+   * non-null assertion) can still crash at runtime.
    *
    * ## Pinned Foundation-vs-WHATWG divergences (intended — do not "fix")
    *

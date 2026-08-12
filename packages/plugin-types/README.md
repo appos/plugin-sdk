@@ -52,8 +52,10 @@ or in `tsconfig.json`:
 
 The global is typed `URLConstructor | undefined` — older hosts, menu-bar
 `JSContext` pools, and the `appos.jsc.urlGlobal.disabled` kill switch all
-leave it undefined. Guard before use, unless your manifest's
-`minHostVersion` pins a host release that injects it:
+leave it undefined. ALWAYS guard before use. Pinning your manifest's
+`minHostVersion` to an injecting host release removes only the older-host
+reason for absence — it does not override the kill switch or the menu-bar
+limitation, so unguarded use can still crash at runtime:
 
 ```ts
 if (typeof URL === "function" && URL.canParse(raw)) {

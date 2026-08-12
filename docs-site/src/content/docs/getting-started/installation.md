@@ -66,9 +66,10 @@ compile time, so this adds nothing to your bundle.
 
 There is ONE opt-in exception: `@appos.space/plugin-types/globals` declares
 the host-injected `URL` global (a Foundation-bridged constructor, targeted
-for host 1.1.0 — typed `URLConstructor | undefined` so you guard before
-use). It applies only to compilations that reference it. Opt in from your
-plugin entry file:
+for host 1.1.0 — typed `URLConstructor | undefined`, so ALWAYS guard before
+use: older hosts, menu-bar contexts, and a user kill switch can each leave
+it undefined regardless of `minHostVersion`). It applies only to
+compilations that reference it. Opt in from your plugin entry file:
 
 ```ts
 /// <reference types="@appos.space/plugin-types/globals" />
