@@ -74,10 +74,14 @@ Notes:
 - **`url.searchParams` is NOT in the v1 subset** — the type omits it and
   the runtime getter throws a `TypeError`; parse `url.search` manually.
   `URL.parse` is likewise absent, and all accessors are readonly.
-- **Do NOT reference the subpath from webview code** compiled against
-  `lib.dom` — the browser already has `URL`, and the two declarations
-  deliberately conflict so a misconfigured tsconfig fails loudly instead of
-  silently mixing two URL contracts.
+- **Reference the subpath only from a DOM-free tsconfig** (e.g.
+  `"lib": ["ES2020"]`) — never from webview code compiled against `lib.dom`,
+  which already has its own `URL`. The two declarations conflict, but don't
+  rely on that as a safeguard: with `skipLibCheck` enabled (the default in
+  most scaffolds) TypeScript suppresses declaration-file conflicts and
+  silently merges the interfaces, so browser-only members (`searchParams`,
+  mutable accessors, unguarded construction) can type-check against the
+  narrower JSC runtime. The DOM-free `lib` is the only reliable isolation.
 
 ## What's included
 

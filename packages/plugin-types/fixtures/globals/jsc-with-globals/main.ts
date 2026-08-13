@@ -41,12 +41,17 @@ export function hostOf(ctx: PluginContext, raw: string): string | null {
   return u.hostname;
 }
 
-export function truthinessGuard(raw: string): string | null {
-  // Truthiness narrowing works too.
-  if (URL) {
-    return new URL(raw).href;
-  }
-  return null;
+export function typeofUndefinedGuard(raw: string): string | null {
+  // The `typeof URL === "undefined"` early-return form also narrows.
+  //
+  // NOTE: `typeof` is the ONLY absence-safe guard. A bare-reference check
+  // like `if (URL)` (or `URL && ...`, or `URL?.canParse(...)`) typechecks —
+  // the `| undefined` in the declaration is compile-time only — but throws
+  // ReferenceError at runtime on hosts where the global binding was never
+  // installed (older hosts, menu-bar contexts, or the
+  // `appos.jsc.urlGlobal.disabled` kill switch).
+  if (typeof URL === "undefined") return null;
+  return new URL(raw).href;
 }
 
 declare const unguardedInput: string;

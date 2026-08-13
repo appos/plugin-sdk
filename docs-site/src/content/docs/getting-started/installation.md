@@ -82,11 +82,17 @@ if (typeof URL === "function" && URL.canParse(raw)) {
 (or add `"types": ["@appos.space/plugin-types/globals"]` to your tsconfig's
 `compilerOptions`.)
 
-Only reference the subpath from plugin-runtime (JavaScriptCore) tsconfigs.
-Webview code compiled against `lib.dom` already has the browser's `URL`;
-the two declarations deliberately conflict, so a misconfigured tsconfig
-fails loudly at compile time instead of silently mixing two different URL
-contracts. The subpath's docblock documents the runtime's
+Only reference the subpath from plugin-runtime (JavaScriptCore) tsconfigs,
+and that tsconfig MUST use a DOM-free `lib` (e.g. `"lib": ["ES2020"]`).
+Never reference it from webview code compiled against `lib.dom` — the
+browser already has its own `URL`. Don't count on the compiler to catch
+that mistake: the two declarations do conflict, but with `skipLibCheck`
+enabled (the default in most scaffolds, including `tsc --init`) TypeScript
+suppresses declaration-file conflicts and silently merges the interfaces
+instead — browser-only members like `searchParams`, mutable accessors, and
+unguarded `new URL(...)` can then type-check even though the JSC runtime
+has the narrower optional contract. The DOM-free `lib` is the only
+reliable isolation. The subpath's docblock documents the runtime's
 Foundation-vs-WHATWG divergences and the v1 subset (`url.searchParams` is
 absent and throws at runtime — parse `url.search` manually).
 

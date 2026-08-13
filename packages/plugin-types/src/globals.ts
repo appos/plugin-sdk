@@ -13,11 +13,15 @@
  *
  *     { "compilerOptions": { "types": ["@appos.space/plugin-types/globals"] } }
  *
- * Reference it ONLY from plugin-runtime (JSC) tsconfigs. Webview code
+ * Reference it ONLY from plugin-runtime (JSC) tsconfigs, and that tsconfig
+ * MUST use a DOM-free `lib` (e.g. `"lib": ["ES2020"]`). Webview code
  * compiled against `lib.dom` already has a (mutable, `searchParams`-bearing)
- * `URL`; these declarations deliberately CONFLICT with lib.dom's so that a
- * misconfigured tsconfig fails loudly at compile time instead of silently
- * mixing two different URL contracts.
+ * `URL`. These declarations conflict with lib.dom's, but do NOT rely on
+ * that conflict as a safeguard: with `skipLibCheck` enabled (the default
+ * in most scaffolds) TypeScript suppresses declaration-file conflicts and
+ * silently MERGES the interfaces, so browser-only surface (`searchParams`,
+ * mutable accessors, unguarded construction) can type-check against the
+ * narrower JSC contract. The DOM-free `lib` is the only reliable isolation.
  */
 
 export {};
