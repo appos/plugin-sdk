@@ -14,8 +14,9 @@ npm install --save-dev @appos.space/plugin-types
 
 ## Usage
 
-Import the types you need (the package ships module exports only — no
-ambient globals):
+Import the types you need (the main entry ships module exports only; the
+ONE exception is the opt-in globals subpath — see
+[Host-injected globals](#host-injected-globals-opt-in) below):
 
 ```ts
 import type {
@@ -30,6 +31,57 @@ export async function activate(ctx: PluginContext) {
   ctx.ui.showNotification({ message: `Hello from ${dir}` });
 }
 ```
+
+## Host-injected globals (opt-in)
+
+AppOS hosts inject a **Foundation-bridged `URL` constructor** into the
+JavaScriptCore plugin runtime (targeted for host 1.1.0). The matching
+ambient declaration ships as a SEPARATE opt-in subpath,
+`@appos.space/plugin-types/globals`, so nothing global leaks into projects
+that don't reference it. Opt in from your plugin entry file:
+
+```ts
+/// <reference types="@appos.space/plugin-types/globals" />
+```
+
+or in `tsconfig.json`:
+
+```json
+{ "compilerOptions": { "types": ["@appos.space/plugin-types/globals"] } }
+```
+
+The global is typed `URLConstructor | undefined` — older hosts, menu-bar
+`JSContext` pools, and the `appos.jsc.urlGlobal.disabled` kill switch all
+leave it undefined. ALWAYS guard before use. Pinning your manifest's
+`minHostVersion` to an injecting host release removes only the older-host
+reason for absence — it does not override the kill switch or the menu-bar
+limitation, so unguarded use can still crash at runtime:
+
+```ts
+if (typeof URL === "function" && URL.canParse(raw)) {
+  const u = new URL(raw);
+  // u.hostname parses identically to the host's own security validators
+}
+```
+
+Notes:
+
+- **Foundation (RFC 3986) semantics, not a WHATWG polyfill.** The pinned
+  divergences are documented in the subpath's docblock: default ports
+  retained in `href`/`port`, empty path stays `""`, out-of-range ports
+  accepted, double-encode on href round-trip of pre-encoded query values,
+  `hostname` lowercased with IPv6 unbracketed (`host`/`origin` re-bracket).
+- **`url.searchParams` is NOT in the v1 subset** — the type omits it and
+  the runtime getter throws a `TypeError`; parse `url.search` manually.
+  `URL.parse` is likewise absent, and all accessors are readonly.
+- **Reference the subpath only from a DOM-free tsconfig** (e.g.
+  `"lib": ["ES2020"]`) — never from webview code compiled against `lib.dom`,
+  which already has its own `URL`. The two declarations conflict, but don't
+  rely on that as a safeguard: with `skipLibCheck` enabled (the default in
+  most scaffolds) TypeScript suppresses declaration-file conflicts and
+  silently merges the interfaces, so browser-only members (`searchParams`,
+  mutable accessors, unguarded construction) can type-check against the
+  narrower JSC runtime. The DOM-free `lib` is the only reliable isolation.
 
 ## What's included
 
