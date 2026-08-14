@@ -1,6 +1,6 @@
 {
   "name": "@appos.space/view-builders",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Typed ViewDescriptor builder helpers for AppOS plugins",
   "type": "module",
   "main": "dist/index.js",
