@@ -69,8 +69,10 @@ Notes:
 - **Foundation (RFC 3986) semantics, not a WHATWG polyfill.** The pinned
   divergences are documented in the subpath's docblock: default ports
   retained in `href`/`port`, empty path stays `""`, out-of-range ports
-  accepted, double-encode on href round-trip of pre-encoded query values,
-  `hostname` lowercased with IPv6 unbracketed (`host`/`origin` re-bracket).
+  accepted, `hostname` lowercased with IPv6 unbracketed (`host`/`origin`
+  re-bracket). Pre-encoded query values round-trip verbatim on href
+  (`%3A` stays `%3A`) — the `%3A` → `%253A` double-encode seen via
+  Foundation's `URLComponents.queryItems` does not apply to this API.
 - **`url.searchParams` is NOT in the v1 subset** — the type omits it and
   the runtime getter throws a `TypeError`; parse `url.search` manually.
   `URL.parse` is likewise absent, and all accessors are readonly.
