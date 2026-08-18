@@ -20,5 +20,5 @@
     { "path": "packages/view-builders" },
     { "path": "packages/plugin-utils" }
   ],
-  "exclude": ["node_modules", "dist", "docs-site"]
+  "exclude": ["node_modules", "dist", "docs-site", "packages/*/fixtures"]
 }
